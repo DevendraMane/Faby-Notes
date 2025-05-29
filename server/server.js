@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 // ***** HANDLING CORS ***** //
 const corsOptions = {
-  origin: `https://faby-clean-client.onrender.com/home`,
+  origin: `https://faby-clean-client.onrender.com`,
   methods: `GET, POST, PUT, DELETE, PATCH, HEAD`,
   credentials: true,
 };
