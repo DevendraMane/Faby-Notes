@@ -1,0 +1,127 @@
+/* Edit User Page Styles - Scoped to this component only */
+.edit-user-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.edit-user-header {
+  margin-bottom: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-pic-container {
+  margin-bottom: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3a86ff;
+  margin-bottom: 8px;
+}
+
+.profile-pic-upload {
+  color: #3a86ff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.profile-pic-upload:hover {
+  color: #2667cc;
+  text-decoration: underline;
+}
+
+.edit-user-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.edit-user-title {
+  font-size: 16px;
+  color: #666;
+  margin: 8px 0 0;
+}
+
+.edit-user-section {
+  margin-bottom: 24px;
+}
+
+.edit-user-section-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.edit-user-form-group {
+  margin-bottom: 16px;
+}
+
+.edit-user-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.edit-user-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: border-color 0.3s;
+}
+
+.edit-user-select:focus {
+  outline: none;
+  border-color: #3a86ff;
+}
+
+.edit-user-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 24px 0;
+}
+
+.edit-user-save-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #3a86ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-user-save-button:hover {
+  background-color: #2667cc;
+}
+
+/* Ensure these styles don't leak out */
+.edit-user-container * {
+  box-sizing: border-box;
+}
