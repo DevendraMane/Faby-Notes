@@ -1,13 +1,29 @@
+"use client";
+
 import { Outlet } from "react-router";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { SideMenu } from "./SideMenu";
-// import { MainContent } from "./MainContent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatBotButton from "./ChatBotButton";
+import BottomNavigation from "./BottomNavigation";
 
 export const AppLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => {
+      window.removeEventListener("resize", checkScreenSize);
+    };
+  }, []);
 
   // Function to handle sidebar state changes
   const handleSidebarToggle = (isCollapsed) => {
@@ -27,8 +43,9 @@ export const AppLayout = () => {
           <Outlet />
         </main>
       </div>
-      <Footer />
+      {!isMobile && <Footer />}
       <ChatBotButton />
+      {isMobile && <BottomNavigation />}
     </div>
   );
 };

@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "../../store/Auth";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,22 +8,39 @@ import { Link, useNavigate } from "react-router-dom";
 export const SideMenu = ({ onToggle }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const { user, isLoggedIn } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, isLoggedIn, logoutUser } = useAuth();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        setCollapsed(true);
+      }
     };
 
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
 
+    // Listen for sidebar toggle event from header
+    const handleToggleSidebar = () => {
+      if (isMobile) {
+        setIsOpen(!isOpen);
+      } else {
+        toggleSidebar();
+      }
+    };
+
+    document.addEventListener("toggleSidebar", handleToggleSidebar);
+
     return () => {
       window.removeEventListener("resize", checkScreenSize);
+      document.removeEventListener("toggleSidebar", handleToggleSidebar);
     };
-  }, []);
+  }, [isMobile, isOpen]);
 
   const toggleSidebar = () => {
     const newCollapsedState = !collapsed;
@@ -33,17 +52,40 @@ export const SideMenu = ({ onToggle }) => {
 
   const handleUploadForm = () => {
     navigate(`/upload/form`);
+    if (isMobile) {
+      setIsOpen(false);
+    }
   };
 
   const handleUserProfileEdit = () => {
     navigate(`user/edit`);
+    if (isMobile) {
+      setIsOpen(false);
+    }
+  };
+
+  const handleNavClick = () => {
+    if (isMobile) {
+      setIsOpen(false);
+    }
+  };
+
+  const handleLogout = () => {
+    logoutUser();
+    if (isMobile) {
+      setIsOpen(false);
+    }
   };
 
   const isTeacher = user?.role === "teacher" || user?.role === "admin";
 
   return (
     <>
-      <div className={`sidemenu ${collapsed ? "sidemenu-collapsed" : ""}`}>
+      <div
+        className={`sidemenu ${collapsed ? "sidemenu-collapsed" : ""} ${
+          isMobile && isOpen ? "sidemenu-mobile-open" : ""
+        }`}
+      >
         <div className="sidemenu-header">
           <div className="sidemenu-user">
             <div className="sidemenu-avatar">
@@ -56,7 +98,7 @@ export const SideMenu = ({ onToggle }) => {
                 }}
               />
             </div>
-            {!collapsed && (
+            {(!collapsed || isMobile) && (
               <>
                 <div className="sidemenu-user-info">
                   {isLoggedIn ? (
@@ -78,24 +120,24 @@ export const SideMenu = ({ onToggle }) => {
             )}
           </div>
 
-          {!collapsed && isLoggedIn && isTeacher && (
+          {(!collapsed || isMobile) && isLoggedIn && isTeacher && (
             <div className="sidemenu-stats">
               <div className="stat-item">
-                <span className="stat-number">{user.followers}</span>
+                <span className="stat-number">{user.followers || 0}</span>
                 <span className="stat-label">followers</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">{user.likesCount}</span>
+                <span className="stat-number">{user.likesCount || 0}</span>
                 <span className="stat-label">likes</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">{user.uploads}</span>
+                <span className="stat-number">{user.uploads || 0}</span>
                 <span className="stat-label">uploads</span>
               </div>
             </div>
           )}
 
-          {!collapsed && isLoggedIn && isTeacher && (
+          {(!collapsed || isMobile) && isLoggedIn && isTeacher && (
             <button className="contribute-btn" onClick={handleUploadForm}>
               + Upload
             </button>
@@ -105,77 +147,121 @@ export const SideMenu = ({ onToggle }) => {
         <div className="sidemenu-content">
           <ul className="sidemenu-nav">
             <li className="sidemenu-nav-item">
-              <Link to="/home" className="sidemenu-nav-link">
+              <Link
+                to="/home"
+                className="sidemenu-nav-link"
+                onClick={handleNavClick}
+              >
                 <i className="icon-home">🏠</i>
-                {!collapsed && <span className="nav-text">Home</span>}
+                {(!collapsed || isMobile) && (
+                  <span className="nav-text">Home</span>
+                )}
               </Link>
             </li>
             <li className="sidemenu-nav-item">
-              <a href="#" className="sidemenu-nav-link">
+              <Link
+                to="/ai-assistant"
+                className="sidemenu-nav-link"
+                onClick={handleNavClick}
+              >
                 <i className="icon-chats">🤖</i>
-                {!collapsed && <span className="nav-text">AI</span>}
-              </a>
-            </li>
-            {/* <li className="sidemenu-nav-item">
-              <a href="#" className="sidemenu-nav-link dropdown">
-                <i className="icon-recent">🕒</i>
-                {!collapsed && (
-                  <>
-                    <span className="nav-text">Recent</span>
-                    <i className="icon-dropdown">▼</i>
-                  </>
+                {(!collapsed || isMobile) && (
+                  <span className="nav-text">AI</span>
                 )}
-              </a>
-            </li> */}
+              </Link>
+            </li>
             <li className="sidemenu-nav-item">
-              <a href="#" className="sidemenu-nav-link">
+              <Link
+                to="/bookmarks"
+                className="sidemenu-nav-link"
+                onClick={handleNavClick}
+              >
                 <i className="icon-library">📚</i>
-                {!collapsed && <span className="nav-text">Bookmarks</span>}
-              </a>
-            </li>
-            {/* <li className="sidemenu-nav-item">
-              <a href="#" className="sidemenu-nav-link dropdown">
-                <i className="icon-courses">🧑🏽‍🏫</i>
-                {!collapsed && (
-                  <>
-                    <span className="nav-text">Courses</span>
-                    <i className="icon-dropdown">▼</i>
-                  </>
+                {(!collapsed || isMobile) && (
+                  <span className="nav-text">Bookmarks</span>
                 )}
-              </a>
-            </li> */}
+              </Link>
+            </li>
             <li className="sidemenu-nav-item">
-              <a href="#" className="sidemenu-nav-link dropdown">
+              <Link
+                to="/books"
+                className="sidemenu-nav-link"
+                onClick={handleNavClick}
+              >
                 <i className="icon-books">📖</i>
-                {!collapsed && (
-                  <>
-                    <span className="nav-text">Books</span>
-                  </>
+                {(!collapsed || isMobile) && (
+                  <span className="nav-text">Books</span>
                 )}
-              </a>
+              </Link>
             </li>
-            {/* <li className="sidemenu-nav-item">
-              <a href="#" className="sidemenu-nav-link dropdown">
-                <i className="icon-studylists">📋</i>
-                {!collapsed && (
+
+            {/* Mobile-only navigation items */}
+            {isMobile && (
+              <>
+                <li className="sidemenu-nav-item mobile-only">
+                  <Link
+                    to="/feedback"
+                    className="sidemenu-nav-link"
+                    onClick={handleNavClick}
+                  >
+                    <i className="icon-feedback">💬</i>
+                    <span className="nav-text">Feedback</span>
+                  </Link>
+                </li>
+
+                {!isLoggedIn ? (
                   <>
-                    <span className="nav-text">Studylists</span>
-                    <i className="icon-dropdown">▼</i>
+                    <li className="sidemenu-nav-item mobile-only">
+                      <Link
+                        to="/login"
+                        className="sidemenu-nav-link"
+                        onClick={handleNavClick}
+                      >
+                        <i className="icon-login">🔑</i>
+                        <span className="nav-text">Login</span>
+                      </Link>
+                    </li>
+                    <li className="sidemenu-nav-item mobile-only">
+                      <Link
+                        to="/register"
+                        className="sidemenu-nav-link"
+                        onClick={handleNavClick}
+                      >
+                        <i className="icon-register">📝</i>
+                        <span className="nav-text">Register</span>
+                      </Link>
+                    </li>
                   </>
+                ) : (
+                  <li className="sidemenu-nav-item mobile-only">
+                    <button
+                      className="sidemenu-nav-link logout-link"
+                      onClick={handleLogout}
+                    >
+                      <i className="icon-logout">🚪</i>
+                      <span className="nav-text">Logout</span>
+                    </button>
+                  </li>
                 )}
-              </a>
-            </li> */}
+              </>
+            )}
           </ul>
         </div>
-        <button className="sidemenu-toggle" onClick={toggleSidebar}>
-          {collapsed ? "➡️" : "⬅️"}
-        </button>
+
+        {!isMobile && (
+          <button className="sidemenu-toggle" onClick={toggleSidebar}>
+            {collapsed ? "➡️" : "⬅️"}
+          </button>
+        )}
       </div>
 
       {isMobile &&
-        !collapsed &&
+        isOpen &&
         createPortal(
-          <div className="sidemenu-overlay" onClick={toggleSidebar}></div>,
+          <div
+            className="sidemenu-overlay"
+            onClick={() => setIsOpen(false)}
+          ></div>,
           document.body
         )}
     </>

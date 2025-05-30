@@ -731,22 +731,22 @@ nav a:hover,
   display: flex;
   flex: 1;
   position: relative;
-  margin-top: 60px; /* Add margin-top to account for the navbar height */
+  /* margin-top: 60px; */
 }
 
 .main-content {
   flex: 1;
   transition: margin-left 0.3s ease;
-  min-height: calc(100vh - 120px); /* Adjust based on your header/footer height */
+  min-height: calc(100vh - 120px);
   padding: 20px;
 }
 
 .content-with-sidebar {
-  margin-left: 280px; /* Width of expanded sidebar */
+  margin-left: 280px;
 }
 
 .content-expanded {
-  margin-left: 60px; /* Width of collapsed sidebar */
+  margin-left: 60px;
 }
 
 /* Mobile adjustments */
@@ -754,6 +754,11 @@ nav a:hover,
   .content-with-sidebar,
   .content-expanded {
     margin-left: 0;
+  }
+  
+  .main-content {
+    margin-top: 120px; /* Header + search bar */
+    padding: 20px 16px 100px 16px; /* Bottom padding for navigation */
   }
 }
 
@@ -2633,4 +2638,276 @@ mark {
   background-color: #fef08a;
   padding: 0 2px;
   border-radius: 2px;
+}
+
+/* Mobile Layout Styles */
+
+/* Header Styles for Mobile */
+.main-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-search-container {
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #e5e5e5;
+  background: #ffffff;
+}
+
+/* Bottom Navigation */
+.bottom-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 99;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  flex-direction: row;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  min-width: 60px;
+}
+
+.bottom-nav-item.active {
+  color: #1976d2;
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
+.bottom-nav-icon {
+  font-size: 20px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.profile-nav-image {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.bottom-nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Sidebar Mobile Styles */
+.sidemenu-mobile-open {
+  transform: translateX(0) !important;
+}
+
+.sidemenu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 98;
+}
+
+/* Mobile-only navigation items */
+.mobile-only {
+  display: none;
+}
+
+.logout-link {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* Chat Bot Button Mobile Positioning */
+.chatbot-button-container {
+  position: fixed;
+  bottom: 80px; /* Above bottom navigation */
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Main Content Mobile Adjustments */
+.main-content {
+  padding-bottom: 80px; /* Space for bottom navigation */
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  /* Header adjustments */
+  .header-nav {
+    display: none;
+  }
+
+  /* Show mobile-only items in sidebar */
+  .mobile-only {
+    display: block;
+  }
+
+  /* Sidebar mobile styles */
+  .sidemenu {
+    transform: translateX(-100%);
+    width: 280px;
+    transition: transform 0.3s ease;
+  }
+
+  .sidemenu-collapsed {
+    transform: translateX(-100%);
+    width: 280px;
+  }
+
+  .sidemenu-toggle {
+    display: none;
+  }
+
+  /* Content adjustments */
+  .content-with-sidebar,
+  .content-expanded {
+    margin-left: 0;
+  }
+
+  /* Main content mobile padding */
+  .main-content {
+    margin-top: 120px; /* Account for header + search */
+    padding: 20px 16px 100px 16px;
+  }
+
+  /* Hide desktop footer on mobile */
+  .footer {
+    display: none;
+  }
+
+  /* Adjust maincontent cards for mobile */
+  .maincontent-cards.grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+  }
+
+  .maincontent-card {
+    height: 140px;
+  }
+
+  .card-content h3 {
+    font-size: 1.2rem;
+  }
+
+  /* Search bar mobile styles */
+  .search-container {
+    width: 100%;
+    margin: 0;
+  }
+
+  .search-bar {
+    width: 100%;
+    padding: 0.6rem 2rem;
+    font-size: 14px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0.5rem;
+  }
+
+  .header-left {
+    gap: 0.5rem;
+  }
+
+  .brand-name a {
+    font-size: 1.2rem;
+  }
+
+  .logo img {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .bottom-nav-icon {
+    font-size: 18px;
+  }
+
+  .bottom-nav-label {
+    font-size: 9px;
+  }
+
+  .main-content {
+    padding: 16px 12px 100px 12px;
+  }
+
+  .maincontent-cards.grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .main-content {
+    margin-top: 80px;
+  }
+
+  .mobile-search-container {
+    display: none;
+  }
+
+  .header-content {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Safe area adjustments for iOS */
+@supports (padding: max(0px)) {
+  .bottom-navigation {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .main-content {
+    padding-bottom: max(100px, calc(100px + env(safe-area-inset-bottom)));
+  }
+
+  .chatbot-button-container {
+    bottom: max(80px, calc(80px + env(safe-area-inset-bottom)));
+  }
 }
