@@ -20,23 +20,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ***** HANDLING CORS ***** //
-const allowedOrigins = [
-  "https://faby-clean-client.onrender.com",
-  "http://localhost:5173",
-];
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: [
+    "http://localhost:5173", // For local development
+    "https://faby-clean-client.onrender.com", // For production
+  ],
   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
   credentials: true,
+  optionsSuccessStatus: 200, // For legacy browser support
 };
 app.use(cors(corsOptions));
 
@@ -52,13 +43,14 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // For cross-origin cookies
     },
   })
 );
 
 // ***** PASSPORT MIDDLEWARE ***** //
-app.use(passport.initialize()); //?sets up passport
-app.use(passport.session()); //? allows it to remember the login using sessions
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Set up passport strategies
 setupPassport();
@@ -72,30 +64,29 @@ app.use("/api/streams", streamRouter);
 // ***** BRANCH ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/branches", branchRouter);
 
-// ***** BRANCH ROUTES Handling-MIDDLEWARE ***** //
+// ***** SUBJECTS ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/subjects", subjectsRouter);
 
-// ***** BRANCH ROUTES Handling-MIDDLEWARE ***** //
+// ***** NOTES ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/notes", notesRouter);
 
 // ***** FEEDBACK ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/form", feedbackRouter);
 
-// ***** CONTACT ROUTES Handling-MIDDLEWARE ***** //
+// ***** UPLOAD ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/upload", uploadRouter);
-// ----- CONTACT ROUTES Handling-MIDDLEWARE ----- //
 
-// ***** CONTACT ROUTES Handling-MIDDLEWARE ***** //
+// ***** SEARCH ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/search", notesSearchRouter);
-// ----- CONTACT ROUTES Handling-MIDDLEWARE ----- //
 
-// Add this route after your existing routes
+// ***** DIALOGFLOW ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/dialogflow", dialogflowRouter);
 
+// ***** AI ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/ai", aiRouter);
 
 connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server is Running on ${PORT} `);
+    console.log(`Server is Running on ${PORT}`);
   });
 });
