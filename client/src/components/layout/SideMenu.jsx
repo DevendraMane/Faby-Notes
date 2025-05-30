@@ -9,7 +9,7 @@ export const SideMenu = ({ onToggle }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { user, isLoggedIn, logoutUser } = useAuth();
+  const { user, isLoggedIn } = useAuth();
 
   const navigate = useNavigate();
 
@@ -25,11 +25,9 @@ export const SideMenu = ({ onToggle }) => {
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
 
-    // Listen for sidebar toggle event from header
+    // Listen for sidebar toggle event from header (only for desktop)
     const handleToggleSidebar = () => {
-      if (isMobile) {
-        setIsOpen(!isOpen);
-      } else {
+      if (!isMobile) {
         toggleSidebar();
       }
     };
@@ -40,7 +38,7 @@ export const SideMenu = ({ onToggle }) => {
       window.removeEventListener("resize", checkScreenSize);
       document.removeEventListener("toggleSidebar", handleToggleSidebar);
     };
-  }, [isMobile, isOpen]);
+  }, [isMobile]);
 
   const toggleSidebar = () => {
     const newCollapsedState = !collapsed;
@@ -65,13 +63,6 @@ export const SideMenu = ({ onToggle }) => {
   };
 
   const handleNavClick = () => {
-    if (isMobile) {
-      setIsOpen(false);
-    }
-  };
-
-  const handleLogout = () => {
-    logoutUser();
     if (isMobile) {
       setIsOpen(false);
     }
@@ -194,57 +185,6 @@ export const SideMenu = ({ onToggle }) => {
                 )}
               </Link>
             </li>
-
-            {/* Mobile-only navigation items */}
-            {isMobile && (
-              <>
-                <li className="sidemenu-nav-item mobile-only">
-                  <Link
-                    to="/feedback"
-                    className="sidemenu-nav-link"
-                    onClick={handleNavClick}
-                  >
-                    <i className="icon-feedback">💬</i>
-                    <span className="nav-text">Feedback</span>
-                  </Link>
-                </li>
-
-                {!isLoggedIn ? (
-                  <>
-                    <li className="sidemenu-nav-item mobile-only">
-                      <Link
-                        to="/login"
-                        className="sidemenu-nav-link"
-                        onClick={handleNavClick}
-                      >
-                        <i className="icon-login">🔑</i>
-                        <span className="nav-text">Login</span>
-                      </Link>
-                    </li>
-                    <li className="sidemenu-nav-item mobile-only">
-                      <Link
-                        to="/register"
-                        className="sidemenu-nav-link"
-                        onClick={handleNavClick}
-                      >
-                        <i className="icon-register">📝</i>
-                        <span className="nav-text">Register</span>
-                      </Link>
-                    </li>
-                  </>
-                ) : (
-                  <li className="sidemenu-nav-item mobile-only">
-                    <button
-                      className="sidemenu-nav-link logout-link"
-                      onClick={handleLogout}
-                    >
-                      <i className="icon-logout">🚪</i>
-                      <span className="nav-text">Logout</span>
-                    </button>
-                  </li>
-                )}
-              </>
-            )}
           </ul>
         </div>
 

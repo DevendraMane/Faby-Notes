@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import RegistrationModal from "../modals/RegistrationModal";
 import LoginModal from "../modals/LoginModal";
@@ -17,6 +17,7 @@ export const Header = () => {
   const [isLogInModalOpen, setIsLogInModalOpen] = useState(false);
   const [isFeedBackModalOpen, setIsFeedBackModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const dropdownRef = useRef(null);
 
   const { isLoggedIn, logoutUser } = useAuth();
 
@@ -32,6 +33,23 @@ export const Header = () => {
       window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
 
   // Listen for custom event to open login modal
   useEffect(() => {
@@ -97,9 +115,11 @@ export const Header = () => {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
-    // Trigger sidebar toggle
-    const event = new CustomEvent("toggleSidebar");
-    document.dispatchEvent(event);
+  };
+
+  const handleMenuItemClick = (action) => {
+    setMobileMenuOpen(false);
+    action();
   };
 
   // Modal functions for Registration
@@ -167,9 +187,56 @@ export const Header = () => {
     <header className="main-header">
       <div className="header-content">
         <div className="header-left">
-          <div className="hamburger" onClick={toggleMobileMenu}>
-            <img src="/images/hamburger.png" alt="Menu" />
-          </div>
+          {isMobile && (
+            <div className="mobile-menu-container" ref={dropdownRef}>
+              <div className="hamburger" onClick={toggleMobileMenu}>
+                <img src="/images/hamburger.png" alt="Menu" />
+              </div>
+
+              {mobileMenuOpen && (
+                <div className="mobile-dropdown-menu">
+                  <button
+                    className="mobile-menu-item"
+                    onClick={() => handleMenuItemClick(openFeedBackModal)}
+                  >
+                    Feedback
+                  </button>
+
+                  {!isLoggedIn ? (
+                    <>
+                      <button
+                        className="mobile-menu-item"
+                        onClick={() =>
+                          handleMenuItemClick(openRegistrationModal)
+                        }
+                      >
+                        Register
+                      </button>
+                      <button
+                        className="mobile-menu-item"
+                        onClick={() => handleMenuItemClick(openLogInModal)}
+                      >
+                        Log In
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="mobile-menu-item logout"
+                      onClick={() => handleMenuItemClick(logoutUser)}
+                    >
+                      Logout
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {!isMobile && (
+            <div className="hamburger" onClick={toggleMobileMenu}>
+              <img src="/images/hamburger.png" alt="Menu" />
+            </div>
+          )}
 
           <div className="logo">
             <img src="/images/faby-logo.png" alt="FN" />
