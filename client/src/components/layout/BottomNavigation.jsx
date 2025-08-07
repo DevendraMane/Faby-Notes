@@ -47,7 +47,7 @@ const BottomNavigation = () => {
       ) : (
         "👤"
       ),
-      path: isLoggedIn ? "/profile" : "/login",
+      path: isLoggedIn ? "user/edit" : "/login",
     },
   ];
 

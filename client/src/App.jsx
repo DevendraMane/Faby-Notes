@@ -18,6 +18,7 @@ import UploadForm from "./pages/UploadForm";
 import { NotesType } from "./pages/NotesType";
 import AiAssistant from "./pages/AiAssistant";
 import EditUser from "./pages/EditUser";
+import Bookmark from "./pages/Bookmark";
 
 export const App = () => {
   const router = createBrowserRouter([
@@ -94,6 +95,10 @@ export const App = () => {
         {
           path: "/view-note/:noteId",
           element: <NotesView />,
+        },
+        {
+          path: "/Bookmarks",
+          element: <Bookmark />,
         },
       ],
     },

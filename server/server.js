@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 5000;
 const corsOptions = {
   origin: [
     "http://localhost:5173", // For local development
-    "https://faby-clean-client.onrender.com", // For production
+    // For production
   ],
   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
   credentials: true,

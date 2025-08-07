@@ -163,7 +163,7 @@ export const SideMenu = ({ onToggle }) => {
             </li>
             <li className="sidemenu-nav-item">
               <Link
-                to="/bookmarks"
+                to="/Bookmarks"
                 className="sidemenu-nav-link"
                 onClick={handleNavClick}
               >
