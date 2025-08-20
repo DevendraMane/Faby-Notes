@@ -14,10 +14,9 @@ import { notesRouter } from "./routes/notes-router.js";
 import { uploadRouter } from "./routes/upload-router.js";
 import { aiRouter } from "./routes/ai-router.js";
 import { dialogflowRouter } from "./routes/dialogflow-router.js";
-import notesSearchRouter from "./routes/search-router.js";\
+import notesSearchRouter from "./routes/search-router.js";
 import path from "path";
 import { fileURLToPath } from "url";
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -92,7 +91,6 @@ app.use("/api/dialogflow", dialogflowRouter);
 
 // ***** AI ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/ai", aiRouter);
-
 
 // Catch-all: send back React's index.html for any non-API route
 app.get("*", (req, res) => {
