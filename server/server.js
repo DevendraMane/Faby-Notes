@@ -14,10 +14,18 @@ import { notesRouter } from "./routes/notes-router.js";
 import { uploadRouter } from "./routes/upload-router.js";
 import { aiRouter } from "./routes/ai-router.js";
 import { dialogflowRouter } from "./routes/dialogflow-router.js";
-import notesSearchRouter from "./routes/search-router.js";
+import notesSearchRouter from "./routes/search-router.js";\
+import path from "path";
+import { fileURLToPath } from "url";
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+// ----- Serving React Frontend ----- //
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// Serve static files from React build
+app.use(express.static(path.join(__dirname, "client", "dist")));
 
 // ***** HANDLING CORS ***** //
 const corsOptions = {
@@ -84,6 +92,14 @@ app.use("/api/dialogflow", dialogflowRouter);
 
 // ***** AI ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/ai", aiRouter);
+
+
+// Catch-all: send back React's index.html for any non-API route
+app.get("*", (req, res) => {
+  if (!req.path.startsWith("/api")) {
+    res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+  }
+});
 
 connectDB().then(() => {
   app.listen(PORT, () => {
