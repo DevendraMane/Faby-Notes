@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext, useContext } from "react";
+import { data } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -125,6 +126,7 @@ export const AuthProvider = ({ children }) => {
         if (response.ok) {
           const data = await response.json();
           setStremData(data.streams);
+          // console.log("this is the stream data:", data.streams);
         }
       } catch (error) {
         console.error("Error fetching stream data:", error);

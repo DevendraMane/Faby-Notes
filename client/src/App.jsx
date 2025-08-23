@@ -28,11 +28,7 @@ export const App = () => {
       errorElement: <ErrorBoundary />,
       children: [
         {
-          path: "",
-          element: <Navigate to="/home" replace />,
-        },
-        {
-          path: "home",
+          path: "/",
           element: <Home />,
         },
         {

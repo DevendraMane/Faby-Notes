@@ -87,7 +87,7 @@ export const Header = () => {
           setIsRegistrationModalOpen(true);
         }, 0);
       } else {
-        navigate("/home");
+        navigate("/");
       }
     } else if (location.pathname !== "/register" && isRegistrationModalOpen) {
       setIsRegistrationModalOpen(false);
@@ -99,7 +99,7 @@ export const Header = () => {
           setIsLogInModalOpen(true);
         }, 0);
       } else {
-        navigate("/home");
+        navigate("/");
       }
     } else if (location.pathname !== "/login" && isLogInModalOpen) {
       setIsLogInModalOpen(false);
@@ -134,7 +134,7 @@ export const Header = () => {
     setIsRegistrationModalOpen(false);
     setTimeout(() => {
       if (location.pathname === "/register") {
-        navigate("/home");
+        navigate("/");
       }
     }, 0);
   };
@@ -151,7 +151,7 @@ export const Header = () => {
     setIsLogInModalOpen(false);
     setTimeout(() => {
       if (location.pathname === "/login") {
-        navigate("/home");
+        navigate("/");
       }
     }, 0);
   };
@@ -174,7 +174,7 @@ export const Header = () => {
     setIsFeedBackModalOpen(false);
     setTimeout(() => {
       if (location.pathname === "/feedback") {
-        navigate("/home");
+        navigate("/");
       }
     }, 0);
   };
@@ -243,7 +243,7 @@ export const Header = () => {
           </div>
 
           <div className="brand-name">
-            <NavLink className="nav-link" to="/home">
+            <NavLink className="nav-link" to="/">
               Faby Notes
             </NavLink>
           </div>

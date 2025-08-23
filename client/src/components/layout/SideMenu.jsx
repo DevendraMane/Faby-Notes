@@ -139,7 +139,7 @@ export const SideMenu = ({ onToggle }) => {
           <ul className="sidemenu-nav">
             <li className="sidemenu-nav-item">
               <Link
-                to="/home"
+                to="/"
                 className="sidemenu-nav-link"
                 onClick={handleNavClick}
               >

@@ -82,7 +82,7 @@ const FeedBackModal = ({ isOpen, onClose }) => {
         toast.success("Feedback submitted successfully!");
         setFormData({ message: "" });
         onClose();
-        navigate("/home");
+        navigate("/");
       } else {
         // Handle non-JSON responses
         const contentType = response.headers.get("content-type");
