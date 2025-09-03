@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import "./ChatWidget.css";
+import { useAuth } from "../../store/Auth";
 
 const ChatWidget = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([
@@ -19,6 +20,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
   const [showQuestions, setShowQuestions] = useState(true);
   const [sessionId] = useState(() => `session-${Date.now()}-${Math.random()}`);
   const messagesEndRef = useRef(null);
+  const { API } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -35,9 +37,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
 
   const fetchPredefinedQuestions = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/dialogflow/questions"
-      );
+      const response = await fetch(`${API}/api/dialogflow/questions`);
       const data = await response.json();
       if (data.success) {
         setPredefinedQuestions(data.questions);
@@ -49,19 +49,16 @@ const ChatWidget = ({ isOpen, onClose }) => {
 
   const sendMessageToDialogflow = async (message) => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/dialogflow/chat",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message,
-            sessionId,
-          }),
-        }
-      );
+      const response = await fetch(`${API}/api/dialogflow/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message,
+          sessionId,
+        }),
+      });
 
       const data = await response.json();
       return data;

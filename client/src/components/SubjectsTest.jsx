@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../store/Auth";
 
 export const SubjectsTest = () => {
   const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { branchName, semesterNumber } = useParams();
+  const { API } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,15 +16,13 @@ export const SubjectsTest = () => {
 
         // Test branch endpoint
         const branchResponse = await fetch(
-          `http://localhost:5000/api/branches/slug/${branchName}`
+          `${API}/api/branches/slug/${branchName}`
         );
 
         const branchData = await branchResponse.json();
 
         // Test subjects endpoint
-        const subjectsResponse = await fetch(
-          `http://localhost:5000/api/subjects`
-        );
+        const subjectsResponse = await fetch(`${API}/api/subjects`);
 
         const subjectsData = await subjectsResponse.json();
 

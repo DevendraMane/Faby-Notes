@@ -9,8 +9,8 @@ const ChatBotButton = () => {
   const location = useLocation();
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  // Only show on /home route
-  if (location.pathname !== "/home") {
+  // Only show on / route
+  if (location.pathname !== "/") {
     return null;
   }
 
@@ -24,6 +24,7 @@ const ChatBotButton = () => {
 
   return (
     <>
+      {/* <h1>this is it...</h1> */}
       <div className="chatbot-button-container">
         <button
           className={`chatbot-button ${isChatOpen ? "active" : ""}`}
@@ -56,7 +57,6 @@ const ChatBotButton = () => {
           </div>
         )}
       </div>
-
       <ChatWidget isOpen={isChatOpen} onClose={closeChat} />
     </>
   );

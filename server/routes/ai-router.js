@@ -1,4 +1,4 @@
-// Backend route file - Create this in your routes folder
+// Backend route file - Update your ai-router.js
 import express from "express";
 import OpenAI from "openai";
 import { authMiddleware } from "../middleware/auth-middleware.js";
@@ -12,7 +12,7 @@ const openai = new OpenAI({
 });
 
 // Chat endpoint
-router.post("/chat", authMiddleware, async (req, res) => {
+router.post("/chat", async (req, res) => {
   try {
     const { message, conversationHistory } = req.body;
 
@@ -47,10 +47,15 @@ router.post("/chat", authMiddleware, async (req, res) => {
       content: message,
     });
 
-    // Call GROQ API
+    // Call GROQ API with updated model
     const completion = await openai.chat.completions.create({
-      model: "llama3-70b-8192", // or "mixtral-8x7b-32768"
+      // Use one of these currently supported models:
+      model: "llama-3.3-70b-versatile", // Recommended replacement
+      // model: "llama-3.1-8b-instant", // Faster, lighter option
+      // model: "mixtral-8x7b-32768", // Alternative option
       messages: messages,
+      temperature: 0.7,
+      max_tokens: 1024,
     });
 
     const aiResponse = completion.choices[0].message.content;
@@ -65,6 +70,12 @@ router.post("/chat", authMiddleware, async (req, res) => {
     if (error.code === "insufficient_quota") {
       return res.status(429).json({
         error: "AI service temporarily unavailable. Please try again later.",
+      });
+    }
+
+    if (error.status === 400) {
+      return res.status(400).json({
+        error: "AI model error. Please contact support.",
       });
     }
 
