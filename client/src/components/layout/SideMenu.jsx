@@ -186,6 +186,11 @@ export const SideMenu = ({ onToggle }) => {
               </Link>
             </li>
           </ul>
+          <img
+            className="under-construction"
+            src="/images/under_construction1.png"
+            alt="UC"
+          />
         </div>
 
         {!isMobile && (
