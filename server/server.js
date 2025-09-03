@@ -27,9 +27,18 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "client", "dist")));
 
 // ***** HANDLING CORS ***** //
+// const corsOptions = {
+//   origin: [
+//     "http://localhost:5173", // For local development
+//     // For production
+//   ],
+//   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
+//   credentials: true,
+//   optionsSuccessStatus: 200, // For legacy browser support
+// };
 const corsOptions = {
   origin: [
-    "http://localhost:5173", // For local development
+    "https://faby-clean-client.onrender.com", // For local development
     // For production
   ],
   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
