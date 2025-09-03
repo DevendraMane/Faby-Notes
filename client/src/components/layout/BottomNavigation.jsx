@@ -11,7 +11,7 @@ const BottomNavigation = () => {
       id: "home",
       label: "Home",
       icon: "🏠",
-      path: "/home",
+      path: "/",
     },
     {
       id: "ai",
