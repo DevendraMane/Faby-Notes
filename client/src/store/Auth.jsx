@@ -76,6 +76,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  //TODO: to get all the books according to there streamName
+  const fetchStreamViseBooks = async (streamName) => {
+    try {
+      const response = await fetch(`${API}/api/books/${streamName}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.books;
+      }
+    } catch (error) {
+      console.error(`Error Fetching Books🚫`);
+    }
+  };
+
   // Get user data when token changes
   useEffect(() => {
     // Check if there's a token in the URL (from Google OAuth)
@@ -167,6 +180,7 @@ export const AuthProvider = ({ children }) => {
         fetchSubjectsData,
         fetchNotesWithSubjectCode,
         fetchBranchWithSlug,
+        fetchStreamViseBooks,
       }}
     >
       {children}

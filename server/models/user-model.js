@@ -64,6 +64,12 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  bookmarks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Note", // reference to Note model
+    },
+  ],
 
   createdAt: {
     type: String,

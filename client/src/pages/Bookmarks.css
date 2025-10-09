@@ -1,0 +1,405 @@
+.notes-detail-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.notes-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6vh;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #4285f4;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 8px 0;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
+.notes-detail-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  flex: 1;
+}
+
+/* Enhanced bookmark controls styling */
+.bookmark-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #ffffff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 2px solid #e8eaed;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.bookmark-controls:hover {
+  border-color: #4285f4;
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
+}
+
+.select-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.select-control:hover {
+  background: #f8f9fa;
+}
+
+.select-control input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4285f4;
+}
+
+.select-control label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #3c4043;
+  cursor: pointer;
+  user-select: none;
+}
+
+.download-button {
+  background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(66, 133, 244, 0.3);
+}
+
+.download-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3367d6 0%, #2851a3 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(66, 133, 244, 0.4);
+}
+
+.download-button:disabled {
+  background: #dadce0;
+  color: #9aa0a6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.remove-button {
+  background: linear-gradient(135deg, #d63333 0%, #a32828 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(66, 133, 244, 0.3);
+}
+
+.remove-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #d63333 0%, #a32828 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(66, 133, 244, 0.4);
+}
+
+.remove-button:disabled {
+  background: #dadce0;
+  color: #9aa0a6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.notes-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Enhanced note card selection styling */
+.note-card-drive {
+  background: white;
+  border: 2px solid #e8eaed;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  user-select: none;
+}
+
+.note-card-drive:hover .note-checkbox,
+.note-card-drive.selected .note-checkbox {
+  opacity: 1;              /* visible on hover or when selected */
+  pointer-events: auto;    /* clickable */
+}
+
+.note-card-drive:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: #4285f4;
+  transform: translateY(-1px);
+}
+
+.note-card-drive.selected {
+  border-color: #4285f4;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.25);
+  transform: translateY(-2px);
+  position: relative;
+}
+
+.note-card-drive.selected::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #4285f4, #34a853);
+  border-radius: 14px;
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.note-checkbox {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  opacity: 0;              /* hidden by default */
+  pointer-events: none;    /* unclickable when hidden */
+  transition: opacity 0.2s ease;
+}
+
+.note-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.note-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  margin-left: 30px;
+}
+
+.note-title-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.note-title-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-menu-container {
+  position: relative;
+}
+
+.note-menu-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.note-menu-button:hover {
+  background: #f0f0f0;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  min-width: 180px;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+.dropdown-item.remove {
+  color: #d93025;
+}
+
+.dropdown-item.remove:hover {
+  background: #fce8e6;
+}
+
+.note-preview-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  margin-bottom: 16px;
+}
+
+.file-type-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+
+.note-metadata-section {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
+}
+
+.upload-info {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Enhanced pagination visibility and styling */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0 20px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e8eaed;
+}
+
+.pagination-arrow,
+.pagination-number {
+  background: white;
+  border: 2px solid #e8eaed;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3c4043;
+  min-width: 44px;
+  height: 44px;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-arrow:hover:not(:disabled),
+.pagination-number:hover {
+  background: #f8f9fa;
+  border-color: #4285f4;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(66, 133, 244, 0.2);
+}
+
+.pagination-arrow:disabled {
+  color: #9aa0a6;
+  cursor: not-allowed;
+  background: #f1f3f4;
+  border-color: #dadce0;
+  transform: none;
+  box-shadow: none;
+}
+
+.pagination-number.active {
+  background: #4285f4;
+  color: white;
+  border-color: #4285f4;
+  box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
+}
+
+.no-notes-section {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.error-message {
+  background: #fce8e6;
+  color: #d93025;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  margin: 40vh 0vh;
+}
+
+@media (max-width: 768px) {
+  .notes-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bookmark-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .notes-grid-container {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination-container {
+    flex-wrap: wrap;
+  }
+}

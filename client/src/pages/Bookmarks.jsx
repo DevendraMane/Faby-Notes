@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// import Loader from "../components/Loader";
+// import Loader from "./Loader";
 import { useAuth } from "../store/Auth";
+import "./Bookmarks.css";
 
-const NotesDetail = () => {
-  const [notes, setNotes] = useState([]);
+const Bookmarks = () => {
+  const [bookmarks, setBookMarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedNotes, setSelectedNotes] = useState(new Set());
@@ -15,53 +16,52 @@ const NotesDetail = () => {
   const [showDropdown, setShowDropdown] = useState(null);
   const notesPerPage = 6;
 
-  const { fetchNotesWithSubjectCode } = useAuth();
+  const { API, token } = useAuth();
   const { subjectCode, semesterNumber, slug, notesType } = useParams();
   const navigate = useNavigate();
-
-  console.log("Notes params:", {
-    subjectCode,
-    semesterNumber,
-    slug,
-    notesType,
-  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const notesData = await fetchNotesWithSubjectCode(subjectCode);
+        setError(null);
 
-        // Filter notes by type if needed
-        const filteredNotes =
-          notesData?.filter(
-            (note) => note.notesType?.toLowerCase() === notesType?.toLowerCase()
-          ) || [];
+        const res = await fetch(`${API}/api/bookmark/user-bookmarks`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-        setNotes(filteredNotes);
+        if (res.ok) {
+          const data = await res.json();
+          setBookMarks(data.bookmarks || []);
+        } else {
+          throw new Error(
+            `Failed to fetch bookmarks: ${res.status} ${res.statusText}`
+          );
+        }
       } catch (err) {
-        console.error("Error fetching notes:", err);
-        setError(`Failed to load notes: ${err.message}`);
+        console.error("Error fetching bookmarks:", err);
+        setError(`Failed to load bookmarks: ${err.message}`);
+        setBookMarks([]);
       } finally {
         setLoading(false);
       }
     };
 
-    if (subjectCode) {
-      fetchData();
-    }
-  }, [subjectCode, notesType, fetchNotesWithSubjectCode]);
+    fetchData();
+  }, [API, token]);
 
   const indexOfLastNote = currentPage * notesPerPage;
   const indexOfFirstNote = indexOfLastNote - notesPerPage;
-  const currentNotes = notes.slice(indexOfFirstNote, indexOfLastNote);
-  const totalPages = Math.ceil(notes.length / notesPerPage);
+  const currentNotes = bookmarks.slice(indexOfFirstNote, indexOfLastNote);
+  const totalPages = Math.ceil(bookmarks.length / notesPerPage);
 
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedNotes(new Set());
     } else {
-      const allNoteIds = new Set(notes.map((note) => note._id));
+      const allNoteIds = new Set(bookmarks.map((note) => note._id)); // 🔥 select all notes, not just current page
       setSelectedNotes(allNoteIds);
     }
     setSelectAll(!selectAll);
@@ -106,11 +106,11 @@ const NotesDetail = () => {
       return;
     }
 
-    const selectedNotesData = notes.filter((note) =>
+    const selectedBookmarks = bookmarks.filter((note) =>
       selectedNotes.has(note._id)
     );
 
-    for (const note of selectedNotesData) {
+    for (const note of selectedBookmarks) {
       try {
         const response = await fetch(note.cloudinaryUrl);
         const blob = await response.blob();
@@ -129,16 +129,92 @@ const NotesDetail = () => {
     }
   };
 
-  const handleBackClick = () => {
-    navigate(
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`
-    );
+  const handleRemoveBookmark = async (noteId, event) => {
+    event.stopPropagation();
+
+    if (!window.confirm("Are you sure you want to remove this bookmark?")) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/api/bookmark/${noteId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to remove bookmark");
+
+      setBookMarks((prev) => prev.filter((note) => note._id !== noteId));
+      setSelectedNotes((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(noteId);
+        return newSet;
+      });
+      setShowDropdown(null);
+    } catch (error) {
+      console.error("Error removing bookmark:", error);
+      alert("Failed to remove bookmark");
+    }
   };
 
-  const handleNoteClick = (noteId) => {
-    navigate(
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${notesType}/note/${noteId}`
-    );
+  const handleRemoveSelected = async () => {
+    if (selectedNotes.size === 0) {
+      alert("Please select notes to remove");
+      return;
+    }
+
+    if (
+      !window.confirm("Are you sure you want to remove selected bookmarks?")
+    ) {
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${API}/api/bookmark/user-bookmarks/remove-selected`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ noteIds: Array.from(selectedNotes) }),
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok)
+        throw new Error(data.message || "Failed to remove bookmarks");
+
+      setBookMarks(data.bookmarks || []);
+      setSelectedNotes(new Set());
+      setSelectAll(false);
+    } catch (err) {
+      console.error("Error removing bookmarks:", err);
+      alert("Failed to remove bookmarks");
+    }
+  };
+
+  const handleBackClick = () => {
+    if (navigate) {
+      navigate(
+        `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`
+      );
+    } else {
+      window.history.back();
+    }
+  };
+
+  const handleNoteClick = (note) => {
+    if (navigate) {
+      navigate(
+        `/branch/${note.slug}/semester/${note.semesterNumber}/subject/${note.subjectCode}/${note.notesType}/note/${note._id}`
+      );
+    } else {
+      console.log("Navigate to note:", note);
+    }
   };
 
   const getFileIcon = (fileName, fileType) => {
@@ -192,20 +268,27 @@ const NotesDetail = () => {
         <button className="back-button" onClick={handleBackClick}>
           ← Back to Notes Type
         </button>
-        <h2 className="notes-detail-title">
-          {subjectCode} - {notesType}
-        </h2>
+        <h2 className="notes-detail-title">Your Bookmarks</h2>
 
         <div className="bookmark-controls">
           <div className="select-control">
             <input
               type="checkbox"
               id="selectAll"
-              checked={selectedNotes.size === notes.length && notes.length > 0}
+              checked={
+                selectedNotes.size === bookmarks.length && bookmarks.length > 0
+              }
               onChange={handleSelectAll}
             />
             <label htmlFor="selectAll">Select All</label>
           </div>
+          <button
+            className="remove-button"
+            onClick={handleRemoveSelected}
+            disabled={selectedNotes.size === 0}
+          >
+            Remove ({selectedNotes.size})
+          </button>
 
           <button
             className="download-button"
@@ -217,7 +300,7 @@ const NotesDetail = () => {
         </div>
       </div>
 
-      {notes.length > 0 ? (
+      {bookmarks.length > 0 ? (
         <>
           <div className="notes-grid-container">
             {currentNotes.map((note) => (
@@ -226,7 +309,7 @@ const NotesDetail = () => {
                 className={`note-card-drive ${
                   selectedNotes.has(note._id) ? "selected" : ""
                 }`}
-                onClick={() => handleNoteClick(note._id)}
+                onClick={() => handleNoteClick(note)}
                 onContextMenu={(e) => handleRightClick(note._id, e)}
               >
                 <div className="note-checkbox">
@@ -261,14 +344,10 @@ const NotesDetail = () => {
                     {showDropdown === note._id && (
                       <div className="dropdown-menu">
                         <button
-                          className="dropdown-item"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleNoteClick(note._id);
-                            setShowDropdown(null);
-                          }}
+                          className="dropdown-item remove"
+                          onClick={(e) => handleRemoveBookmark(note._id, e)}
                         >
-                          View Note
+                          Remove from bookmarks
                         </button>
                       </div>
                     )}
@@ -308,8 +387,8 @@ const NotesDetail = () => {
                 currentPage,
                 "Total pages:",
                 totalPages,
-                "Total notes:",
-                notes.length
+                "Total bookmarks:",
+                bookmarks.length
               )}
 
               <button
@@ -346,13 +425,11 @@ const NotesDetail = () => {
         </>
       ) : (
         <div className="no-notes-section">
-          <p>
-            Sorry🥲, No {notesType} available for {subjectCode} yet.
-          </p>
+          <p>Sorry🥲, No bookmarks available yet.</p>
         </div>
       )}
     </div>
   );
 };
 
-export default NotesDetail;
+export default Bookmarks;

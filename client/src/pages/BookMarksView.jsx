@@ -6,8 +6,8 @@ import Loader from "../components/Loader";
 import { useAuth } from "../store/Auth";
 import { toast } from "react-toastify";
 
-export const NotesView = () => {
-  const [note, setNote] = useState(null);
+export const BookMarksView = () => {
+  const [bookmark, setBookMarks] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,16 +20,9 @@ export const NotesView = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const notesData = await fetchNotesWithSubjectCode(subjectCode);
+        const bookmarksData = await fetch(`${API}/api/bookmark/user-bookmarks`);
 
-        // Find the specific note by ID
-        const specificNote = notesData?.find((n) => n._id.includes(noteId));
-
-        if (!specificNote) {
-          throw new Error("Note not found");
-        }
-
-        setNote(specificNote);
+        setBookMarks(bookmarksData.bookmarks);
       } catch (err) {
         console.error("Error fetching note:", err);
         setError(`Failed to load note: ${err.message}`);
@@ -109,17 +102,13 @@ export const NotesView = () => {
       <div className="pdf-viewer-toolbar">
         <button className="download-btn" onClick={handleDownload}>
           <span className="download-icon">⬇</span>
-          Uploader
+          Download
         </button>
 
         <div className="viewer-tools">
-          {/* <button className="tool-btn">
+          <button className="tool-btn">
             <span>✨</span>
             AI Tools
-          </button> */}
-          <button className="download-btn" onClick={handleDownload}>
-            <span className="download-icon">⬇</span>
-            Download
           </button>
           <button className="tool-btn like-btn">
             <span>👍</span>0
@@ -151,4 +140,4 @@ export const NotesView = () => {
   );
 };
 
-export default NotesView;
+export default BookMarksView;

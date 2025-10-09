@@ -35,7 +35,7 @@ const UploadForm = () => {
 
   // UI state
   const [loading, setLoading] = useState(false);
-  const { API, streamData, branchData, fetchSubjectsData } = useAuth();
+  const { API, token, streamData, branchData, fetchSubjectsData } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [customInputs, setCustomInputs] = useState({
@@ -264,6 +264,9 @@ const UploadForm = () => {
       // Submit to backend
       const response = await fetch(`${API}/api/upload/form`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: uploadFormData,
       });
 

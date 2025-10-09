@@ -17,6 +17,8 @@ import { dialogflowRouter } from "./routes/dialogflow-router.js";
 import notesSearchRouter from "./routes/search-router.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import { booksRouter } from "./routes/books-router.js";
+import { bookMarkRouter } from "./routes/bookmark-router.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,24 +29,24 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "client", "dist")));
 
 // ***** HANDLING CORS ***** //
-// const corsOptions = {
-//   origin: [
-//     "http://localhost:5173", // For local development
-//     // For production
-//   ],
-//   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
-//   credentials: true,
-//   optionsSuccessStatus: 200, // For legacy browser support
-// };
 const corsOptions = {
   origin: [
-    "https://faby-clean-client.onrender.com", // For local development
+    "http://localhost:5173", // For local development
     // For production
   ],
   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
   credentials: true,
   optionsSuccessStatus: 200, // For legacy browser support
 };
+// const corsOptions = {
+//   origin: [
+//     "https://faby-clean-client.onrender.com", // For local development
+//     // For production
+//   ],
+//   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
+//   credentials: true,
+//   optionsSuccessStatus: 200, // For legacy browser support
+// };
 app.use(cors(corsOptions));
 
 // ***** JSON Data Handling-MIDDLEWARE ***** //
@@ -100,6 +102,11 @@ app.use("/api/dialogflow", dialogflowRouter);
 
 // ***** AI ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/ai", aiRouter);
+
+// ***** BOOKS Handling-MIDDLEWARE ***** //
+app.use("/api/books", booksRouter);
+
+app.use("/api/bookmark", bookMarkRouter);
 
 // Catch-all: send back React's index.html for any non-API route
 app.get(/^(?!\/api).*/, (req, res) => {

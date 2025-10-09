@@ -18,7 +18,10 @@ import UploadForm from "./pages/UploadForm";
 import { NotesType } from "./pages/NotesType";
 import AiAssistant from "./pages/AiAssistant";
 import EditUser from "./pages/EditUser";
-import Bookmark from "./pages/Bookmark";
+import Bookmark from "./pages/Bookmarks";
+import { Books } from "./pages/Books";
+import StreamViseBooks from "./pages/StreamViseBooks";
+import BookMarksView from "./pages/BookMarksView";
 
 export const App = () => {
   const router = createBrowserRouter([
@@ -93,8 +96,24 @@ export const App = () => {
           element: <NotesView />,
         },
         {
-          path: "/Bookmarks",
+          path: "/user/bookmarks",
           element: <Bookmark />,
+        },
+        {
+          path: "/books",
+          element: <Books />,
+        },
+        {
+          path: "/books/:streamName",
+          element: <StreamViseBooks />,
+        },
+        {
+          path: "/books/:streamName/:book-view",
+          element: <NotesView />,
+        },
+        {
+          path: "/user/bookmarks/:notesId",
+          element: <BookMarksView />,
         },
       ],
     },

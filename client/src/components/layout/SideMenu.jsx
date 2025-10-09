@@ -113,10 +113,10 @@ export const SideMenu = ({ onToggle }) => {
 
           {(!collapsed || isMobile) && isLoggedIn && isTeacher && (
             <div className="sidemenu-stats">
-              <div className="stat-item">
+              {/* <div className="stat-item">
                 <span className="stat-number">{user.followers || 0}</span>
                 <span className="stat-label">followers</span>
-              </div>
+              </div> */}
               <div className="stat-item">
                 <span className="stat-number">{user.likesCount || 0}</span>
                 <span className="stat-label">likes</span>
@@ -163,7 +163,7 @@ export const SideMenu = ({ onToggle }) => {
             </li>
             <li className="sidemenu-nav-item">
               <Link
-                to="/Bookmarks"
+                to="/user/bookmarks"
                 className="sidemenu-nav-link"
                 onClick={handleNavClick}
               >
@@ -173,7 +173,7 @@ export const SideMenu = ({ onToggle }) => {
                 )}
               </Link>
             </li>
-            <li className="sidemenu-nav-item">
+            {/* <li className="sidemenu-nav-item">
               <Link
                 to="/books"
                 className="sidemenu-nav-link"
@@ -184,7 +184,7 @@ export const SideMenu = ({ onToggle }) => {
                   <span className="nav-text">Books</span>
                 )}
               </Link>
-            </li>
+            </li> */}
           </ul>
           <img
             className="under-construction"

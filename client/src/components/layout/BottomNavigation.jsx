@@ -23,14 +23,14 @@ const BottomNavigation = () => {
       id: "bookmarks",
       label: "Bookmarks",
       icon: "📚",
-      path: "/bookmarks",
+      path: "/user/bookmarks",
     },
-    {
-      id: "books",
-      label: "Books",
-      icon: "📖",
-      path: "/books",
-    },
+    // {
+    //   id: "books",
+    //   label: "Books",
+    //   icon: "📖",
+    //   path: "/books",
+    // },
     {
       id: "profile",
       label: "Profile",

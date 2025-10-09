@@ -151,6 +151,7 @@ export const saveUploads = async (req, res) => {
         dateStyle: "medium",
         timeStyle: "short",
       }),
+      uploadedBy: req.userId,
     });
 
     console.log("Notes uploaded successfully:", notesUploaded._id);

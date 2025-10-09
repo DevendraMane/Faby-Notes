@@ -1,13 +1,29 @@
+"use client";
+import { Pencil, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
+import Modal from "react-modal";
+// import Loader from "../components/Loader";
 import { useAuth } from "../store/Auth";
+
+Modal.setAppElement("#root");
 
 export const Subjects = () => {
   const [subjects, setSubjects] = useState([]);
   const [branch, setBranch] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingSubject, setEditingSubject] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    subjectName: "",
+    subjectCode: "",
+  });
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newSubjectData, setNewSubjectData] = useState({
+    subjectName: "",
+    subjectCode: "",
+  });
   const { slug, semesterNumber } = useParams();
   const { fetchBranchWithSlug, fetchSubjectsData } = useAuth();
   const navigate = useNavigate();
@@ -70,7 +86,61 @@ export const Subjects = () => {
     );
   };
 
-  if (loading) return <Loader />;
+  const handleEditClick = (e, subject) => {
+    e.stopPropagation(); // Prevent subject click navigation
+    setEditingSubject(subject);
+    setEditFormData({
+      subjectName: subject.subjectName,
+      subjectCode: subject.subjectCode,
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingSubject(null);
+    setEditFormData({ subjectName: "", subjectCode: "" });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateSubject = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`/api/subjects/${editingSubject._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editFormData),
+      });
+
+      if (response.ok) {
+        const updatedSubject = await response.json();
+        // Update the subjects list with the updated subject
+        setSubjects((prev) =>
+          prev.map((subject) =>
+            subject._id === editingSubject._id
+              ? { ...subject, ...editFormData }
+              : subject
+          )
+        );
+        closeEditModal();
+      } else {
+        console.error("Failed to update subject");
+      }
+    } catch (error) {
+      console.error("Error updating subject:", error);
+    }
+  };
+
+  // if (loading) return <Loader />;
   if (error) return <div className="error-message">{error}</div>;
 
   return (
@@ -82,6 +152,13 @@ export const Subjects = () => {
         <h2 className="subject-title">
           {branch.name && `${branch.name} - `}Semester {semesterNumber}
         </h2>
+        <button
+          className="add-button flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+          onClick={() => setIsAddModalOpen(true)}
+        >
+          <Plus size={16} /> Add Subject
+        </button>
+
         <div className="subject-list">
           {subjects && subjects.length > 0 ? (
             subjects.map((subject, index) => (
@@ -100,6 +177,13 @@ export const Subjects = () => {
                     • Available Docs: {subject.availableDocs}
                   </div>
                 </div>
+                <button
+                  className="edit-button"
+                  onClick={(e) => handleEditClick(e, subject)}
+                  title="Edit Subject"
+                >
+                  <Pencil size={16} strokeWidth={2} className="text-gray-700" />
+                </button>
               </div>
             ))
           ) : (
@@ -107,6 +191,152 @@ export const Subjects = () => {
           )}
         </div>
       </div>
+
+      <Modal
+        isOpen={isEditModalOpen}
+        onRequestClose={closeEditModal}
+        className="edit-modal"
+        overlayClassName="modal-overlay"
+        contentLabel="Edit Subject"
+      >
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2>Edit Subject</h2>
+            <button className="close-button" onClick={closeEditModal}>
+              ×
+            </button>
+          </div>
+          <form onSubmit={handleUpdateSubject} className="edit-form">
+            <div className="form-group">
+              <label htmlFor="subjectName">Subject Name:</label>
+              <input
+                type="text"
+                id="subjectName"
+                name="subjectName"
+                value={editFormData.subjectName}
+                onChange={handleInputChange}
+                required
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="subjectCode">Subject Code:</label>
+              <input
+                type="text"
+                id="subjectCode"
+                name="subjectCode"
+                value={editFormData.subjectCode}
+                onChange={handleInputChange}
+                required
+                className="form-input"
+              />
+            </div>
+            <div className="form-actions">
+              <button
+                type="button"
+                onClick={closeEditModal}
+                className="cancel-button"
+              >
+                Cancel
+              </button>
+              <button type="submit" className="save-button">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={isAddModalOpen}
+        onRequestClose={() => setIsAddModalOpen(false)}
+        className="edit-modal"
+        overlayClassName="modal-overlay"
+        contentLabel="Add Subject"
+      >
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2>Add Subject</h2>
+            <button
+              className="close-button"
+              onClick={() => setIsAddModalOpen(false)}
+            >
+              ×
+            </button>
+          </div>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                const response = await fetch("/api/subjects", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    ...newSubjectData,
+                    semesterNumber,
+                    branchSlug: slug,
+                  }),
+                });
+                if (response.ok) {
+                  const createdSubject = await response.json();
+                  setSubjects((prev) => [...prev, createdSubject]);
+                  setIsAddModalOpen(false);
+                  setNewSubjectData({ subjectName: "", subjectCode: "" });
+                }
+              } catch (err) {
+                console.error("Error adding subject:", err);
+              }
+            }}
+            className="edit-form"
+          >
+            <div className="form-group">
+              <label htmlFor="newSubjectName">Subject Name:</label>
+              <input
+                type="text"
+                id="newSubjectName"
+                name="subjectName"
+                value={newSubjectData.subjectName}
+                onChange={(e) =>
+                  setNewSubjectData({
+                    ...newSubjectData,
+                    subjectName: e.target.value,
+                  })
+                }
+                required
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="newSubjectCode">Subject Code:</label>
+              <input
+                type="text"
+                id="newSubjectCode"
+                name="subjectCode"
+                value={newSubjectData.subjectCode}
+                onChange={(e) =>
+                  setNewSubjectData({
+                    ...newSubjectData,
+                    subjectCode: e.target.value,
+                  })
+                }
+                required
+                className="form-input"
+              />
+            </div>
+            <div className="form-actions">
+              <button
+                type="button"
+                onClick={() => setIsAddModalOpen(false)}
+                className="cancel-button"
+              >
+                Cancel
+              </button>
+              <button type="submit" className="save-button">
+                Add Subject
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
     </div>
   );
 };
