@@ -51,7 +51,7 @@ const getBranchBySlug = async (req, res) => {
       return res.status(404).json({ msg: "Branch not found" });
     }
 
-    console.log(`Found branch: ${branch.name}`);
+    console.log(`Found branch: ${branch}`);
     res.status(200).json({
       message: "Branch fetched successfully",
       branch,

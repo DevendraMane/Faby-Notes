@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 // import Loader from "../components/Loader";
 import { useAuth } from "../store/Auth";
+import { toast } from "react-toastify";
 
 Modal.setAppElement("#root");
 
@@ -25,9 +26,10 @@ export const Subjects = () => {
     subjectCode: "",
   });
   const { slug, semesterNumber } = useParams();
-  const { fetchBranchWithSlug, fetchSubjectsData } = useAuth();
+  const { fetchBranchWithSlug, fetchSubjectsData, API } = useAuth();
   const navigate = useNavigate();
-
+  const { user, isLoggedIn } = useAuth();
+  const isTeacher = user?.role === "teacher" || user?.role === "admin";
   console.log("👋🏽", slug, semesterNumber);
 
   useEffect(() => {
@@ -113,13 +115,16 @@ export const Subjects = () => {
   const handleUpdateSubject = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/subjects/${editingSubject._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editFormData),
-      });
+      const response = await fetch(
+        `${API}/api/subjects/${editingSubject._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editFormData),
+        }
+      );
 
       if (response.ok) {
         const updatedSubject = await response.json();
@@ -140,6 +145,36 @@ export const Subjects = () => {
     }
   };
 
+  const handleAddSubjectBtnClick = () => {
+    setIsAddModalOpen(true);
+  };
+  const handleAddSubjectBtnSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `${API}/api/subjects/${slug}/${semesterNumber}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...newSubjectData,
+            semesterNumber,
+            slug: slug,
+          }),
+        }
+      );
+      if (response.ok) {
+        const createdSubject = await response.json();
+        setSubjects((prev) => [...prev, createdSubject]);
+        setIsAddModalOpen(false);
+        setNewSubjectData({ subjectName: "", subjectCode: "" });
+        toast.success(`Subject Added ✅`);
+      }
+    } catch (err) {
+      console.error("Error adding subject:", err);
+    }
+  };
+
   // if (loading) return <Loader />;
   if (error) return <div className="error-message">{error}</div>;
 
@@ -152,13 +187,15 @@ export const Subjects = () => {
         <h2 className="subject-title">
           {branch.name && `${branch.name} - `}Semester {semesterNumber}
         </h2>
-        <button
-          className="add-button flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-          onClick={() => setIsAddModalOpen(true)}
-        >
-          <Plus size={16} /> Add Subject
-        </button>
 
+        {isLoggedIn && isTeacher && (
+          <button
+            className="add-button flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            onClick={(e) => handleAddSubjectBtnClick(e)}
+          >
+            <Plus size={16} /> Add Subject
+          </button>
+        )}
         <div className="subject-list">
           {subjects && subjects.length > 0 ? (
             subjects.map((subject, index) => (
@@ -177,13 +214,19 @@ export const Subjects = () => {
                     • Available Docs: {subject.availableDocs}
                   </div>
                 </div>
-                <button
-                  className="edit-button"
-                  onClick={(e) => handleEditClick(e, subject)}
-                  title="Edit Subject"
-                >
-                  <Pencil size={16} strokeWidth={2} className="text-gray-700" />
-                </button>
+                {isLoggedIn && isTeacher && (
+                  <button
+                    className="edit-button"
+                    onClick={(e) => handleEditClick(e, subject)}
+                    title="Edit Subject"
+                  >
+                    <Pencil
+                      size={16}
+                      strokeWidth={2}
+                      className="text-gray-700"
+                    />
+                  </button>
+                )}
               </div>
             ))
           ) : (
@@ -263,31 +306,7 @@ export const Subjects = () => {
               ×
             </button>
           </div>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              try {
-                const response = await fetch("/api/subjects", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    ...newSubjectData,
-                    semesterNumber,
-                    branchSlug: slug,
-                  }),
-                });
-                if (response.ok) {
-                  const createdSubject = await response.json();
-                  setSubjects((prev) => [...prev, createdSubject]);
-                  setIsAddModalOpen(false);
-                  setNewSubjectData({ subjectName: "", subjectCode: "" });
-                }
-              } catch (err) {
-                console.error("Error adding subject:", err);
-              }
-            }}
-            className="edit-form"
-          >
+          <form onSubmit={handleAddSubjectBtnSubmit} className="edit-form">
             <div className="form-group">
               <label htmlFor="newSubjectName">Subject Name:</label>
               <input

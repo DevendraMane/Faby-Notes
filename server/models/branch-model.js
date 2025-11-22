@@ -2,11 +2,16 @@ import mongoose from "mongoose";
 
 const branchSchema = new mongoose.Schema(
   {
-    name: {
+    shortform: {
       type: String,
       required: true,
     },
-    shortform: {
+    streamName: {
+      type: String,
+      required: true,
+    },
+    slug: String,
+    branchName: {
       type: String,
       required: true,
     },
@@ -15,7 +20,6 @@ const branchSchema = new mongoose.Schema(
       ref: "Stream",
       required: true,
     },
-    slug: String,
   },
   { collection: "branches" }
 );

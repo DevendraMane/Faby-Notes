@@ -83,6 +83,23 @@ export const Home = () => {
     );
   }
 
+  if (!branchData.length || !streamData.length) {
+    return (
+      <div className="loader-container">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="skeleton-section">
+            <div className="skeleton-title"></div>
+            <div className="skeleton-cards">
+              {[...Array(4)].map((_, j) => (
+                <div key={j} className="skeleton-card"></div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   // If streams data is available, render dynamic content
   return (
     <div className="maincontent">
