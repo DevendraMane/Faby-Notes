@@ -19,19 +19,48 @@ const saveBookmark = async (req, res) => {
 };
 const getBookmarks = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).populate("bookmarks");
+    const { page = 1, limit = 6 } = req.query;
+    const skip = (page - 1) * limit;
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    // ✅ Populate bookmarks + uploader info
+    const user = await User.findById(req.userId)
+      .populate({
+        path: "bookmarks",
+        populate: {
+          path: "uploadedBy", // 👈 nested populate for uploader details
+          select: "username role", // only username & role
+        },
+        options: {
+          sort: { uploadedAt: -1 },
+          skip: Number(skip),
+          limit: Number(limit),
+        },
+      })
+      .lean();
 
-    // Prevent duplicates
-    // if (!user.bookmarks.includes(req.params.noteId)) {
-    //   user.bookmarks.push(req.params.noteId);
-    //   await user.save();
-    // }
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    res.json({ message: "Users Bookmarks", bookmarks: user.bookmarks });
+    const totalBookmarks = await User.aggregate([
+      { $match: { _id: user._id } },
+      { $project: { count: { $size: "$bookmarks" } } },
+    ]);
+
+    const totalPages = Math.ceil(
+      (totalBookmarks[0]?.count || 0) / Number(limit)
+    );
+
+    res.status(200).json({
+      message: "✅ User bookmarks fetched successfully",
+      bookmarks: user.bookmarks,
+      currentPage: Number(page),
+      totalPages,
+      totalBookmarks: totalBookmarks[0]?.count || 0,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Error fetching bookmarks:", err);
+    res.status(500).json({ message: "Failed to load bookmarks" });
   }
 };
 

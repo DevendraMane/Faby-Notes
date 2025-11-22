@@ -32,6 +32,12 @@ authRouter
   .route("/google")
   .get(passport.authenticate("google", { scope: ["profile", "email"] }));
 
+authRouter.patch(
+  "/update-profile",
+  authMiddleware,
+  authcontrollers.updateUserProfile
+);
+
 // Google OAuth callback route(login)
 authRouter.route("/google/callback").get(
   passport.authenticate("google", {

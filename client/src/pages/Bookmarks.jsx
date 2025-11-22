@@ -13,6 +13,8 @@ const Bookmarks = () => {
   const [selectedNotes, setSelectedNotes] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const [showDropdown, setShowDropdown] = useState(null);
   const notesPerPage = 6;
 
@@ -26,15 +28,19 @@ const Bookmarks = () => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${API}/api/bookmark/user-bookmarks`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await fetch(
+          `${API}/api/bookmark/user-bookmarks?page=${currentPage}&limit=${notesPerPage}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (res.ok) {
           const data = await res.json();
           setBookMarks(data.bookmarks || []);
+          setTotalPages(data.totalPages || 1);
         } else {
           throw new Error(
             `Failed to fetch bookmarks: ${res.status} ${res.statusText}`
@@ -50,12 +56,11 @@ const Bookmarks = () => {
     };
 
     fetchData();
-  }, [API, token]);
+  }, [API, token, currentPage]);
 
-  const indexOfLastNote = currentPage * notesPerPage;
-  const indexOfFirstNote = indexOfLastNote - notesPerPage;
-  const currentNotes = bookmarks.slice(indexOfFirstNote, indexOfLastNote);
-  const totalPages = Math.ceil(bookmarks.length / notesPerPage);
+  // const indexOfLastNote = currentPage * notesPerPage;
+  // const indexOfFirstNote = indexOfLastNote - notesPerPage;
+  // const bookmarks = bookmarks.slice(indexOfFirstNote, indexOfLastNote);
 
   const handleSelectAll = () => {
     if (selectAll) {
@@ -78,7 +83,7 @@ const Bookmarks = () => {
     }
 
     setSelectedNotes(newSelected);
-    setSelectAll(newSelected.size === currentNotes.length);
+    setSelectAll(newSelected.size === bookmarks.length);
   };
 
   const handleRightClick = (noteId, event) => {
@@ -94,7 +99,7 @@ const Bookmarks = () => {
       }
 
       setSelectedNotes(newSelected);
-      setSelectAll(newSelected.size === currentNotes.length);
+      setSelectAll(newSelected.size === bookmarks.length);
 
       console.log("[v0] Ctrl+Right-click selection:", noteId);
     }
@@ -303,7 +308,7 @@ const Bookmarks = () => {
       {bookmarks.length > 0 ? (
         <>
           <div className="notes-grid-container">
-            {currentNotes.map((note) => (
+            {bookmarks.map((note) => (
               <div
                 key={note._id}
                 className={`note-card-drive ${
@@ -373,6 +378,9 @@ const Bookmarks = () => {
                     <span className="upload-info">
                       Upload Date •{" "}
                       {new Date(note.uploadedAt).toLocaleDateString()}
+                    </span>
+                    <span className="upload-info">
+                      Upload By •{note.uploadedBy?.username || "Unknown"}
                     </span>
                   </div>
                 </div>

@@ -20,15 +20,20 @@ export const NotesView = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+
+        // Step 1: fetch all notes for this subject code
         const notesData = await fetchNotesWithSubjectCode(subjectCode);
 
-        // Find the specific note by ID
-        const specificNote = notesData?.find((n) => n._id.includes(noteId));
+        // Step 2: find the exact note by noteId (convert _id to string)
+        const specificNote = notesData?.find(
+          (n) => n._id.toString() === noteId
+        );
 
         if (!specificNote) {
           throw new Error("Note not found");
         }
 
+        // Step 3: set that note
         setNote(specificNote);
       } catch (err) {
         console.error("Error fetching note:", err);
@@ -54,6 +59,8 @@ export const NotesView = () => {
     window.open(note.cloudinaryUrl, "_blank");
   };
 
+  const handleLikeClick = () => {};
+
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -68,7 +75,7 @@ export const NotesView = () => {
 
   const handleBookmark = async () => {
     if (!isLoggedIn) {
-      toast.error("Please log in to submit feedback");
+      toast.error("Please log in first");
       openLogInModal();
       return;
     } else {
@@ -93,39 +100,66 @@ export const NotesView = () => {
     }
   };
 
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    const shareTitle = note.notesTitle || "Check out this note!";
+    const shareText = `Hey! Check out "${note.notesTitle}" uploaded on Faby Notes.`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+        // toast.success("Shared successfully 🚀");
+      } catch (err) {
+        console.error("Error sharing:", err);
+        toast.error("Share canceled or failed");
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("Link copied to clipboard 📋");
+      } catch (err) {
+        console.error("Clipboard error:", err);
+        toast.error("Failed to copy link");
+      }
+    }
+  };
+
   if (loading) return <Loader />;
   if (error) return <div className="error-message">{error}</div>;
   if (!note) return <div className="error-message">Note not found</div>;
 
   return (
     <div className="notes-viewer-container">
-      <div className="notes-viewer-header">
-        <button className="back-button" onClick={handleBackClick}>
-          ← Back to Notes
-        </button>
-        <h2 className="viewer-title">{note.notesTitle}</h2>
-      </div>
-
       <div className="pdf-viewer-toolbar">
-        <button className="download-btn" onClick={handleDownload}>
+        {/* <button className="download-btn" onClick={handleDownload}>
           <span className="download-icon">⬇</span>
           Uploader
-        </button>
-
+        </button> */}
+        <div className="note-title-section">
+          <h2 className="viewer-title">{note.notesTitle}</h2>
+          <p className="uploaded-by">uploaded by {note.uploadedBy.username}</p>
+        </div>
         <div className="viewer-tools">
           {/* <button className="tool-btn">
             <span>✨</span>
             AI Tools
           </button> */}
+
           <button className="download-btn" onClick={handleDownload}>
             <span className="download-icon">⬇</span>
             Download
           </button>
-          <button className="tool-btn like-btn">
+          {/* <button
+            onClick={() => {
+              handleLikeClick();
+            }}
+            className="tool-btn like-btn"
+          >
             <span>👍</span>0
-          </button>
-          {/* <button className="tool-btn dislike-btn">
-            <span>👎</span>0
           </button> */}
           <button
             className="tool-btn save-btn"
@@ -134,8 +168,11 @@ export const NotesView = () => {
             <span>🔖</span>
             Save
           </button>
-          <button className="tool-btn share-btn">
-            <span>↗</span>
+          <button
+            className="tool-btn share-btn hover:scale-105 transition"
+            onClick={handleShare}
+          >
+            <span>↗️</span> Share
           </button>
         </div>
       </div>

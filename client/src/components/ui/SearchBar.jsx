@@ -1,34 +1,33 @@
 import { useState, useEffect } from "react";
 import SearchResult from "../../pages/SearchResult";
 import { useAuth } from "../../store/Auth";
+import { useDebounce } from "../../hooks/useDebounce";
+
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { API } = useAuth();
 
-  // Debounce search input
+  // ✅ Apply debounce with 500ms delay
+  const debouncedQuery = useDebounce(searchQuery, 500);
+
   useEffect(() => {
-    if (searchQuery.trim() === "") {
+    if (debouncedQuery.trim() === "") {
       setSearchResults([]);
       return;
     }
 
-    const timerId = setTimeout(() => {
-      performSearch();
-    }, 300);
+    performSearch(debouncedQuery);
+  }, [debouncedQuery]);
 
-    return () => clearTimeout(timerId);
-  }, [searchQuery]);
-
-  const performSearch = async () => {
+  const performSearch = async (query) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${API}/api/search/notes?query=${encodeURIComponent(searchQuery)}`
+        `${API}/api/search/notes?query=${encodeURIComponent(query)}`
       );
       const data = await response.json();
-      console.log("API Response:", data); // Add this line
 
       if (!response.ok) throw new Error(data.message || "Search failed");
 

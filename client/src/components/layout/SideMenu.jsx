@@ -111,12 +111,13 @@ export const SideMenu = ({ onToggle }) => {
             )}
           </div>
 
-          {(!collapsed || isMobile) && isLoggedIn && isTeacher && (
+          {/* Implement this later */}
+          {/* {(!collapsed || isMobile) && isLoggedIn && isTeacher && (
             <div className="sidemenu-stats">
-              {/* <div className="stat-item">
+              <div className="stat-item">
                 <span className="stat-number">{user.followers || 0}</span>
                 <span className="stat-label">followers</span>
-              </div> */}
+              </div>
               <div className="stat-item">
                 <span className="stat-number">{user.likesCount || 0}</span>
                 <span className="stat-label">likes</span>
@@ -126,7 +127,7 @@ export const SideMenu = ({ onToggle }) => {
                 <span className="stat-label">uploads</span>
               </div>
             </div>
-          )}
+          )} */}
 
           {(!collapsed || isMobile) && isLoggedIn && isTeacher && (
             <button className="contribute-btn" onClick={handleUploadForm}>

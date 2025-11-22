@@ -1,4 +1,6 @@
 import Notes from "../models/notes-model.js";
+import Subject from "../models/subjects-model.js";
+
 import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
@@ -155,6 +157,19 @@ export const saveUploads = async (req, res) => {
     });
 
     console.log("Notes uploaded successfully:", notesUploaded._id);
+    await Subject.findOneAndUpdate(
+      { subjectCode: subjectCode },
+      { $inc: { availableDocs: 1 } }
+    );
+    // if (!updatedSubject) {
+    //   console.warn(`⚠️ No subject found for code ${subjectCode}`);
+    // }
+
+    // to implement note deletion
+    //     await Subject.findOneAndUpdate(
+    //   { subjectCode },
+    //   { $inc: { availableDocs: -1 } }
+    // );
 
     res.status(201).json({
       message: "Notes Uploaded Successfully 📝",

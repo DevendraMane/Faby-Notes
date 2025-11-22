@@ -1,65 +1,107 @@
 import React, { useState } from "react";
 import "./EditUser.css";
+import { useAuth } from "../store/Auth";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 const EditUser = () => {
   const [stream, setStream] = useState("");
+  const { API, token, user, isLoggedIn } = useAuth();
   const [branch, setBranch] = useState("");
   const [branches, setBranches] = useState([]);
   const [profilePic, setProfilePic] = useState("/images/user-image.png");
 
-  const handleStreamChange = (e) => {
+  const canEdit =
+    isLoggedIn && (user?.role === "teacher" || user?.role === "student");
+
+  const handleStreamChange = (e, isInit = false) => {
     const selectedStream = e.target.value;
     setStream(selectedStream);
 
-    if (selectedStream === "Engineering") {
-      setBranches([
+    let updatedBranches = [];
+    if (selectedStream === "Engineering" || selectedStream === "Diploma") {
+      updatedBranches = [
         "Computer Science and Engineering",
         "Artificial Intelligence and Data Science",
         "Civil Engineering",
         "Electrical Engineering",
         "Electronics and Telecommunication",
         "Mechanical Engineering",
-      ]);
-    } else if (selectedStream === "Diploma") {
-      setBranches([
-        "Computer Science and Engineering",
-        "Artificial Intelligence and Data Science",
-        "Civil Engineering",
-        "Electrical Engineering",
-        "Electronics and Telecommunication",
-        "Mechanical Engineering",
-      ]);
+      ];
     } else if (selectedStream === "Pharmacy") {
-      setBranches(["B.Pharma", "D.Pharma"]);
-    } else {
-      setBranches([]);
+      updatedBranches = ["B.Pharma", "D.Pharma"];
     }
-    setBranch("");
+    setBranches(updatedBranches);
+
+    // ❌ Don't reset branch when loading from saved data
+    if (!isInit) setBranch("");
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePic(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setProfilePic(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (user?.streamName) {
+      setStream(user.streamName);
+      if (user.branchName) setBranch(user.branchName);
+      handleStreamChange({ target: { value: user.streamName } }, true);
+    }
+  }, [user]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ profilePic, stream, branch });
-    // Submit logic here
+
+    if (!isLoggedIn) {
+      toast.error("Login required to edit profile");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/api/auth/update-profile`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ streamName: stream, branchName: branch }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("Profile updated successfully ✅");
+        console.log("Updated user:", data.user);
+      } else {
+        toast.error(data.message || "Failed to update profile");
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      toast.error("Something went wrong");
+    }
   };
 
   return (
     <div className="edit-user-container">
       <div className="edit-user-header">
         <div className="profile-pic-container">
-          <img src={profilePic} alt="Profile" className="profile-pic" />
-          <label className="profile-pic-upload">
+          <img
+            className="profile-pic"
+            src={user?.profileImage || "/images/user-image.png"}
+            alt="User avatar"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/images/user-image.png";
+            }}
+          />
+          {/* <label className="profile-pic-upload">
             <input
               type="file"
               accept="image/*"
@@ -67,10 +109,11 @@ const EditUser = () => {
               style={{ display: "none" }}
             />
             Change Photo
-          </label>
+          </label> */}
         </div>
-        <h1 className="edit-user-name">Devendra Mane</h1>
-        <p className="edit-user-title">Student</p>
+
+        <h1 className="edit-user-name">{user?.username || "Guest User"}</h1>
+        <p className="edit-user-title">{isLoggedIn ? user?.role : "Unknown"}</p>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -82,6 +125,7 @@ const EditUser = () => {
               value={stream}
               onChange={handleStreamChange}
               required
+              disabled={!canEdit} // 👈 disable if guest
             >
               <option value="">Select Stream</option>
               <option value="Engineering">Engineering</option>
@@ -90,29 +134,32 @@ const EditUser = () => {
             </select>
           </div>
 
-          {stream && (
-            <div className="edit-user-form-group">
-              <label className="edit-user-label">Branch</label>
-              <select
-                className="edit-user-select"
-                value={branch}
-                onChange={(e) => setBranch(e.target.value)}
-                required
-              >
-                <option value="">Select Branch</option>
-                {branches.map((branchOption, index) => (
-                  <option key={index} value={branchOption}>
-                    {branchOption}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          <div className="edit-user-form-group">
+            <label className="edit-user-label">Branch</label>
+            <select
+              className="edit-user-select"
+              value={branch}
+              onChange={(e) => setBranch(e.target.value)}
+              required
+              disabled={!canEdit} // 👈 disable if guest
+            >
+              <option value="">Select Branch</option>
+              {branches.map((branchOption, index) => (
+                <option key={index} value={branchOption}>
+                  {branchOption}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="edit-user-divider"></div>
 
-        <button type="submit" className="edit-user-save-button">
+        <button
+          type="submit"
+          className={`edit-user-save-button ${!canEdit ? "disabled" : ""}`}
+          disabled={!canEdit}
+        >
           Save
         </button>
       </form>
