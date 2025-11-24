@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="client/public/images/faby-logo.png" alt="Faby Notes Logo" width="180" />
+</p>
 # 📚 Faby Notes — Your Study Buddy (2025)
 
 A full-stack platform for students to upload, organize, and access study materials — enhanced with AI-powered smart search.
