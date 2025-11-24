@@ -1,4 +1,3 @@
-```markdown
 # 📚 Faby Notes — Your Study Buddy (2025)
 
 A full-stack platform for students to upload, organize, and access study materials — enhanced with AI-powered smart search.
@@ -82,51 +81,8 @@ A full-stack platform for students to upload, organize, and access study materia
 - **JSON Web Tokens (JWT)** - Authentication
 - **Nodemailer** - Email service
 - **Passport Google OAuth** - Social authentication
-- **Dialogflow** - AI conversations
+- **Dialogflow** - AI Chatbot
 - **Zod** - Data validation
-
----
-
-## 📦 Dependencies
-
-### Frontend Dependencies
-```json
-{
-  "@radix-ui/react-dialog": "^1.1.1",
-  "@radix-ui/react-label": "^2.1.0",
-  "@radix-ui/react-select": "^2.1.1",
-  "axios": "^1.6.2",
-  "lucide-react": "^0.294.0",
-  "react": "^18.2.0",
-  "react-dom": "^18.2.0",
-  "react-icons": "^4.12.0",
-  "react-modal": "^3.16.1",
-  "react-router-dom": "^7.0.0",
-  "react-toastify": "^9.1.3",
-  "vite": "^5.0.8"
-}
-```
-
-### Backend Dependencies
-```json
-{
-  "@google-cloud/dialogflow": "^5.6.0",
-  "bcryptjs": "^2.4.3",
-  "cloudinary": "^1.41.0",
-  "cors": "^2.8.5",
-  "dotenv": "^16.3.1",
-  "express": "^4.18.2",
-  "express-session": "^1.17.3",
-  "jsonwebtoken": "^9.0.2",
-  "mongoose": "^8.0.3",
-  "multer": "^1.4.5-lts.1",
-  "multer-storage-cloudinary": "^4.0.0",
-  "nodemailer": "^6.9.7",
-  "passport": "^0.6.0",
-  "passport-google-oauth20": "^2.0.0",
-  "zod": "^3.22.4"
-}
-```
 
 ---
 
@@ -154,21 +110,18 @@ Faby-Notes/
     ├── server.js         # Server entry point
     └── package.json
 ```
-
----
-
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-username/faby-notes.git
-cd faby-notes
+git clone https://github.com/DevendraMane/Faby-Notes.git
+cd Faby-Notes
 ```
 
 ### 2️⃣ Backend Setup
 ```bash
 cd server
-npm install
+bun install
 
 # Create environment file
 cp .env.example .env
@@ -176,31 +129,78 @@ cp .env.example .env
 
 **Configure `/server/.env`:**
 ```env
+# -----------------------------------------
+# 🌱 MongoDB Connection
+# -----------------------------------------
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/faby-notes
+
+# -----------------------------------------
+# ⚙️ Server Configuration
+# -----------------------------------------
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-SESSION_SECRET=your_session_secret_key
+NODE_ENV=development
 
-CLOUDINARY_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+# -----------------------------------------
+# 📧 Email Configuration
+# -----------------------------------------
+EMAIL_USER=<your-email>
+EMAIL_PASSWORD=<your-app-password>
 
-GOOGLE_CLIENT_ID=your_google_oauth_client_id
-GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
+# -----------------------------------------
+# 🌐 Frontend URL
+# -----------------------------------------
+FRONTEND_URL=http://localhost:5173
+# FRONTEND_URL=https://your-frontend.onrender.com
 
-DIALOGFLOW_PROJECT_ID=your_dialogflow_project_id
+# -----------------------------------------
+# 🔐 JWT Secret
+# -----------------------------------------
+JWT_SECRET_KEY=<your-jwt-secret>
+
+# -----------------------------------------
+# 🔑 Google OAuth
+# -----------------------------------------
+GOOGLE_CLIENT_ID=<your-google-client-id>
+GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
+# GOOGLE_CALLBACK_URL=https://your-backend.onrender.com/api/auth/google/callback
+
+# -----------------------------------------
+# ☁️ Cloudinary Configuration
+# -----------------------------------------
+CLOUDINARY_CLOUD_NAME=<cloud-name>
+CLOUDINARY_API_KEY=<cloud-api-key>
+CLOUDINARY_API_SECRET=<cloud-api-secret>
+
+# -----------------------------------------
+# 🤖 OpenAI API
+# -----------------------------------------
+OPENAI_API_KEY=<your-openai-api-key>
+
+# -----------------------------------------
+# ⚡ GROQ API
+# -----------------------------------------
+GROQ_API_KEY=<your-groq-api-key>
+
+# -----------------------------------------
+# 🗣 Dialogflow
+# -----------------------------------------
+DIALOGFLOW_PROJECT_ID=faby-notes
+
+# Base64 encoded Google Application Credentials (Service Account JSON)
+GOOGLE_APPLICATION_CREDENTIALS_BASE64=<base64-service-account-json>
 ```
 
 **Start the backend server:**
-```bash
-npm run dev
+```
+nodemon server.js
 ```
 
 ### 3️⃣ Frontend Setup
 ```bash
 cd ../client
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 ### 4️⃣ Access the Application
@@ -210,23 +210,9 @@ npm run dev
 ---
 
 ## 🔗 API Communication
-
-- **Axios** for HTTP requests between frontend and backend
 - **JWT tokens** attached to headers for protected routes
 - **Multer middleware** for file uploads to Cloudinary
 - **CORS enabled** for cross-origin requests
-
----
-
-## 🖼 Screenshots
-
-*(Add your screenshots here)*
-- ![Homepage](./screenshots/home.png)
-- ![Branches Page](./screenshots/branches.png)
-- ![PDF Viewer](./screenshots/pdf.png)
-- ![AI Chatbot](./screenshots/ai-chat.png)
-
----
 
 ## 🤝 Contributing
 
@@ -237,11 +223,8 @@ We welcome contributions! Please follow these steps:
 3. **Commit** your changes: `git commit -m 'Add amazing feature'`
 4. **Push** to the branch: `git push origin feature/amazing-feature`
 5. **Open** a Pull Request
-
 ---
-
 ## 📝 License
-
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
@@ -256,9 +239,9 @@ If you found this project helpful, please give it a ⭐ on GitHub!
 
 **Made with ❤️ by Devendra**
 
-- 📧 Email: your-email@example.com
-- 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/your-profile)
-- 🐙 GitHub: [@your-username](https://github.com/your-username)
+- 📧 Email: devendradineshmane@gmail.com
+- 💼 LinkedIn: [DevendraMane](https://www.linkedin.com/in/devendramane/)
+
 
 ---
 
@@ -268,5 +251,3 @@ If you found this project helpful, please give it a ⭐ on GitHub!
 
 </div>
 ```
-
-Save this as `README.md` in your project root directory. This file provides a comprehensive overview of your Faby Notes project with proper formatting, badges, and clear installation instructions that will be helpful for other developers.
