@@ -170,7 +170,7 @@ const AiAssistant = () => {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type your message here... (Press Enter to send)"
+            placeholder="Type your message here..."
             className="ai-assistant-input"
             rows="1"
             disabled={isLoading}

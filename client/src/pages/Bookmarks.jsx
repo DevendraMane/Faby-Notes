@@ -231,8 +231,7 @@ const Bookmarks = () => {
   if (!isLoggedIn) {
     return (
       <div className="error-message">
-        Login/Register First
-        <Link to="/login">Go to Login</Link>
+        <Link to="/login">Login/Register First</Link>
       </div>
     );
   }
