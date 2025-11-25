@@ -958,7 +958,7 @@ nav a:hover,
   .maincontent {
   padding: 20px;
   width: 100%;
-  margin: 0px;
+  /* margin-top: 8vh; */
 }
 
   .maincontent-header {
@@ -2667,6 +2667,7 @@ nav a:hover,
 
   .ai-assistant-header {
     padding: 15px;
+    margin-top: 13vh;
   }
 
   .ai-assistant-title h2 {
@@ -2683,6 +2684,7 @@ nav a:hover,
 
   .ai-assistant-input-container {
     padding: 15px;
+    margin-bottom: 9vh;
   }
 }
 
