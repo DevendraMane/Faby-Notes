@@ -18,8 +18,7 @@ export const Header = () => {
   const [isFeedBackModalOpen, setIsFeedBackModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const dropdownRef = useRef(null);
-
-  const { isLoggedIn, logoutUser } = useAuth();
+  const { isLoggedIn, logoutUser, user } = useAuth();
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -117,6 +116,8 @@ export const Header = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const isTeacher = user?.role === "teacher" || user?.role === "admin";
+
   const handleMenuItemClick = (action) => {
     setMobileMenuOpen(false);
     action();
@@ -195,6 +196,16 @@ export const Header = () => {
 
               {mobileMenuOpen && (
                 <div className="mobile-dropdown-menu">
+                  {isLoggedIn && isTeacher && (
+                    <button
+                      className="mobile-menu-item"
+                      onClick={() =>
+                        handleMenuItemClick(() => navigate("/upload/form"))
+                      }
+                    >
+                      + Upload
+                    </button>
+                  )}
                   <button
                     className="mobile-menu-item"
                     onClick={() => handleMenuItemClick(openFeedBackModal)}

@@ -9,7 +9,6 @@ const subjectsSchema = mongoose.Schema(
     subjectCode: {
       type: String,
       required: true,
-      unique: true,
       uppercase: true,
       trim: true,
     },
@@ -17,10 +16,29 @@ const subjectsSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+
+    // CHANGES START HERE 👇👇
+    isCommon: {
+      type: Boolean,
+      default: false,
+    },
+
     branchName: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.isCommon;
+      },
     },
+
+    slug: {
+      type: String,
+      required: function () {
+        return !this.isCommon;
+      },
+      lowercase: true,
+    },
+    // CHANGES END HERE 👆👆
+
     semesterNumber: {
       type: Number,
       required: true,
@@ -29,15 +47,7 @@ const subjectsSchema = mongoose.Schema(
     },
     availableDocs: {
       type: Number,
-      required: true,
-      min: 0,
       default: 0,
-    },
-    slug: {
-      type: String,
-      required: true,
-      // unique: true,
-      lowercase: true,
     },
   },
   {
@@ -46,6 +56,4 @@ const subjectsSchema = mongoose.Schema(
   }
 );
 
-const Subject = mongoose.model("Subject", subjectsSchema);
-
-export default Subject;
+export default mongoose.model("Subject", subjectsSchema);

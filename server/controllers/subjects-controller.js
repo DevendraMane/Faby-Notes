@@ -3,12 +3,24 @@ import Branch from "../models/branch-model.js";
 
 export const getAllSubjectsData = async (req, res) => {
   try {
-    const { semesterNumber, streamName, slug } = req.query; // Use query params
-    const subjectsData = await Subject.find({
-      semesterNumber: semesterNumber,
-      streamName: streamName, // Add stream filter
-      slug: slug, // Add branch filter
-    });
+    const { semesterNumber, streamName, slug } = req.query;
+    const sem = Number(semesterNumber);
+
+    let query = {
+      streamName,
+      semesterNumber: sem,
+    };
+
+    if (sem <= 2) {
+      // COMMON SUBJECTS → no slug required
+      query.isCommon = true;
+    } else {
+      // BRANCH SUBJECTS
+      query.isCommon = false;
+      query.slug = slug;
+    }
+
+    const subjectsData = await Subject.find(query).sort({ subjectName: 1 });
 
     res.status(200).json({
       message: "Subjects fetched successfully 📚",
@@ -17,7 +29,7 @@ export const getAllSubjectsData = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Failed to get all subject",
+      message: "Failed to get subjects",
       error: error.message,
     });
   }
@@ -58,42 +70,68 @@ export const addSubject = async (req, res) => {
   try {
     const { slug, semesterNumber } = req.params;
     const { subjectName, subjectCode } = req.body;
+    const sem = Number(semesterNumber);
 
-    // Find branch for extra data
-    const branch = await Branch.findOne({ slug });
-    // console.log(`⭐?This is Branch` + branch);
-    if (!branch) {
-      return res.status(404).json({ message: "Branch not found" });
-    }
-
-    // Prevent duplicate subject codes for same branch & semester
-    const existingSubject = await Subject.findOne({
-      subjectCode: subjectCode.toUpperCase(),
-      slug,
-      semesterNumber,
-    });
-    if (existingSubject) {
-      return res.status(400).json({
-        message: "Subject already exists for this semester and branch",
-      });
-    }
-
-    // Create and save
-    const newSubject = new Subject({
+    let newSubject = {
       subjectName,
       subjectCode: subjectCode.toUpperCase(),
-      slug,
-      streamName: branch.streamName,
-      branchName: branch.branchName,
-      semesterNumber,
+      semesterNumber: sem,
       availableDocs: 0,
-    });
+    };
 
-    await newSubject.save();
+    // FIRST YEAR → COMMON SUBJECT
+    if (sem <= 2) {
+      const branch = await Branch.findOne({ slug });
+      newSubject.streamName = branch.streamName;
+      newSubject.isCommon = true;
+      newSubject.slug = "";
+      newSubject.branchName = "";
+
+      // prevent duplicate subjectCode for common subjects
+      const exists = await Subject.findOne({
+        subjectCode: newSubject.subjectCode,
+        semesterNumber: sem,
+        isCommon: true,
+        streamName: branch.streamName,
+      });
+
+      if (exists) {
+        return res.status(400).json({
+          message: "Common subject already exists for this semester",
+        });
+      }
+    }
+
+    // BRANCH-SPECIFIC
+    else {
+      const branch = await Branch.findOne({ slug });
+      if (!branch) {
+        return res.status(404).json({ message: "Branch not found" });
+      }
+
+      newSubject.streamName = branch.streamName;
+      newSubject.branchName = branch.branchName;
+      newSubject.slug = slug;
+      newSubject.isCommon = false;
+
+      const exists = await Subject.findOne({
+        subjectCode: newSubject.subjectCode,
+        semesterNumber: sem,
+        slug,
+      });
+
+      if (exists) {
+        return res.status(400).json({
+          message: "Subject already exists for this branch & semester",
+        });
+      }
+    }
+
+    const created = await Subject.create(newSubject);
 
     res.status(201).json({
       message: "Subject added successfully ✅",
-      subject: newSubject,
+      subject: created,
     });
   } catch (error) {
     console.error("Error adding subject:", error);

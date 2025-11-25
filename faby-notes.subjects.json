@@ -1,0 +1,649 @@
+[{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa5f"
+  },
+  "subjectName": "Engineering Mathematics - I",
+  "subjectCode": "BTBS101",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 13,
+  "semesterNumber": 1,
+  "slug": "eng-cse",
+  "updatedAt": {
+    "$date": "2025-11-22T02:18:19.968Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa60"
+  },
+  "subjectName": "Engineering Physics ",
+  "subjectCode": "BTBS102P",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 8,
+  "semesterNumber": 1,
+  "slug": "eng-cse",
+  "updatedAt": {
+    "$date": "2025-11-11T09:52:11.708Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa61"
+  },
+  "subjectName": "Basic Electrical Engineering",
+  "subjectCode": "BTEE103",
+  "streamName": "Engineering",
+  "branchName": "Electrical Engineering",
+  "availableDocs": 15,
+  "semesterNumber": 2,
+  "slug": "electrical-engineering"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa62"
+  },
+  "subjectName": "Engineering Mechanics",
+  "subjectCode": "BTME104",
+  "streamName": "Engineering",
+  "branchName": "Mechanical Engineering",
+  "availableDocs": 10,
+  "semesterNumber": 2,
+  "slug": "eng-mech"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa63"
+  },
+  "subjectName": "Data Structures",
+  "subjectCode": "BTCS201",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 18,
+  "semesterNumber": 3,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa64"
+  },
+  "subjectName": "Digital Electronics",
+  "subjectCode": "BTEC202",
+  "streamName": "Engineering",
+  "branchName": "Electrical Engineering",
+  "availableDocs": 14,
+  "semesterNumber": 3,
+  "slug": "electrical-engineering"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa65"
+  },
+  "subjectName": "Thermodynamics",
+  "subjectCode": "BTME203",
+  "streamName": "Engineering",
+  "branchName": "Mechanical Engineering",
+  "availableDocs": 9,
+  "semesterNumber": 3,
+  "slug": "eng-mech"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa66"
+  },
+  "subjectName": "Engineering Chemistry",
+  "subjectCode": "BTCH204",
+  "streamName": "Engineering",
+  "branchName": "Artificial Intelligence and Data Science",
+  "availableDocs": 7,
+  "semesterNumber": 1,
+  "slug": "eng-ai&ds"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa67"
+  },
+  "subjectName": "Object Oriented Programming",
+  "subjectCode": "BTCS301",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 16,
+  "semesterNumber": 5,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa68"
+  },
+  "subjectName": "Microprocessors",
+  "subjectCode": "BTEC302",
+  "streamName": "Engineering",
+  "branchName": "Electrical Engineering",
+  "availableDocs": 11,
+  "semesterNumber": 5,
+  "slug": "electrical-engineering"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa69"
+  },
+  "subjectName": "Fluid Mechanics",
+  "subjectCode": "BTME303",
+  "streamName": "Engineering",
+  "branchName": "Mechanical Engineering",
+  "availableDocs": 13,
+  "semesterNumber": 4,
+  "slug": "eng-mech"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa6a"
+  },
+  "subjectName": "Pharmaceutical Chemistry - I",
+  "subjectCode": "DTPH101",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 6,
+  "semesterNumber": 1
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa6b"
+  },
+  "subjectName": "Human Anatomy",
+  "subjectCode": "DTPH102",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 5,
+  "semesterNumber": 1
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa6c"
+  },
+  "subjectName": "Pharmaceutics - I",
+  "subjectCode": "DTPH201",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 8,
+  "semesterNumber": 2
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa6d"
+  },
+  "subjectName": "Biochemistry",
+  "subjectCode": "DTPH202",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 7,
+  "semesterNumber": 2
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa6e"
+  },
+  "subjectName": "Pharmacology - I",
+  "subjectCode": "DTPH301",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 9,
+  "semesterNumber": 3
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa6f"
+  },
+  "subjectName": "Pharmaceutical Analysis",
+  "subjectCode": "DTPH302",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 6,
+  "semesterNumber": 3
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa70"
+  },
+  "subjectName": "Medicinal Chemistry",
+  "subjectCode": "DTPH401",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 10,
+  "semesterNumber": 4
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa71"
+  },
+  "subjectName": "Pharmacognosy",
+  "subjectCode": "DTPH402",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 7,
+  "semesterNumber": 4
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa72"
+  },
+  "subjectName": "Diploma Mathematics - I",
+  "subjectCode": "DTMA101",
+  "streamName": "Diploma",
+  "branchName": "Computer",
+  "availableDocs": 11,
+  "semesterNumber": 1
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa73"
+  },
+  "subjectName": "Basic Electronics",
+  "subjectCode": "DTEL102",
+  "streamName": "Diploma",
+  "branchName": "Electronics",
+  "availableDocs": 9,
+  "semesterNumber": 1
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa74"
+  },
+  "subjectName": "Programming in C",
+  "subjectCode": "DTCO201",
+  "streamName": "Diploma",
+  "branchName": "Computer",
+  "availableDocs": 14,
+  "semesterNumber": 2
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa75"
+  },
+  "subjectName": "Digital Techniques",
+  "subjectCode": "DTEL202",
+  "streamName": "Diploma",
+  "branchName": "Electronics",
+  "availableDocs": 8,
+  "semesterNumber": 2
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa76"
+  },
+  "subjectName": "Database Management",
+  "subjectCode": "DTCO301",
+  "streamName": "Diploma",
+  "branchName": "Computer",
+  "availableDocs": 12,
+  "semesterNumber": 3
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa77"
+  },
+  "subjectName": "Microcontroller Applications",
+  "subjectCode": "DTEL302",
+  "streamName": "Diploma",
+  "branchName": "Electronics",
+  "availableDocs": 10,
+  "semesterNumber": 3
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa78"
+  },
+  "subjectName": "Web Development",
+  "subjectCode": "DTCO401",
+  "streamName": "Diploma",
+  "branchName": "Computer",
+  "availableDocs": 15,
+  "semesterNumber": 4
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa79"
+  },
+  "subjectName": "Communication Systems",
+  "subjectCode": "DTEL402",
+  "streamName": "Diploma",
+  "branchName": "Electronics",
+  "availableDocs": 9,
+  "semesterNumber": 4
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa7a"
+  },
+  "subjectName": "Artificial Intelligence",
+  "subjectCode": "BTCS501",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 20,
+  "semesterNumber": 7,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa7b"
+  },
+  "subjectName": "VLSI Design",
+  "subjectCode": "BTEC502",
+  "streamName": "Engineering",
+  "branchName": "Electrical Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 7,
+  "slug": "electrical-engineering"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa7c"
+  },
+  "subjectName": "Heat Transfer",
+  "subjectCode": "BTME503",
+  "streamName": "Engineering",
+  "branchName": "Mechanical Engineering",
+  "availableDocs": 11,
+  "semesterNumber": 6,
+  "slug": "eng-mech"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa7d"
+  },
+  "subjectName": "Pharmaceutical Biotechnology",
+  "subjectCode": "DTPH501",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 8,
+  "semesterNumber": 5
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa7e"
+  },
+  "subjectName": "Clinical Pharmacy",
+  "subjectCode": "DTPH502",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 6,
+  "semesterNumber": 5
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa7f"
+  },
+  "subjectName": "Mobile Application Development",
+  "subjectCode": "DTCO501",
+  "streamName": "Diploma",
+  "branchName": "Computer",
+  "availableDocs": 13,
+  "semesterNumber": 5
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa80"
+  },
+  "subjectName": "Industrial Electronics",
+  "subjectCode": "DTEL502",
+  "streamName": "Diploma",
+  "branchName": "Electronics",
+  "availableDocs": 9,
+  "semesterNumber": 5
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa81"
+  },
+  "subjectName": "Cloud Computing",
+  "subjectCode": "BTCS601",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 17,
+  "semesterNumber": 8,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa82"
+  },
+  "subjectName": "Wireless Communication",
+  "subjectCode": "BTEC602",
+  "streamName": "Engineering",
+  "branchName": "Electrical Engineering",
+  "availableDocs": 14,
+  "semesterNumber": 8,
+  "slug": "electrical-engineering"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa83"
+  },
+  "subjectName": "Automobile Engineering",
+  "subjectCode": "BTME603",
+  "streamName": "Engineering",
+  "branchName": "Mechanical Engineering",
+  "availableDocs": 10,
+  "semesterNumber": 7,
+  "slug": "eng-mech"
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa84"
+  },
+  "subjectName": "Pharmacy Practice",
+  "subjectCode": "DTPH601",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 7,
+  "semesterNumber": 6
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa85"
+  },
+  "subjectName": "Pharmaceutical Marketing",
+  "subjectCode": "DTPH602",
+  "streamName": "Pharmacy",
+  "branchName": "B.Pharm",
+  "availableDocs": 5,
+  "semesterNumber": 6
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa86"
+  },
+  "subjectName": "Cyber Security",
+  "subjectCode": "DTCO601",
+  "streamName": "Diploma",
+  "branchName": "Computer",
+  "availableDocs": 12,
+  "semesterNumber": 6
+},
+{
+  "_id": {
+    "$oid": "682efdd4973def303ddafa87"
+  },
+  "subjectName": "Embedded Systems",
+  "subjectCode": "DTEL602",
+  "streamName": "Diploma",
+  "branchName": "Electronics",
+  "availableDocs": 10,
+  "semesterNumber": 6
+},
+{
+  "_id": {
+    "$oid": "68302e63c96bdfe1226d938b"
+  },
+  "subjectName": "Engineering Graphics",
+  "subjectCode": "BTES103G",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 1,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "68302e63c96bdfe1226d938c"
+  },
+  "subjectName": "Energy and Environment Engineering",
+  "subjectCode": "BTES105",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 1,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "68302e63c96bdfe1226d938d"
+  },
+  "subjectName": "Communication Skills",
+  "subjectCode": "BTHM104",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 1,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "68372fd8199cccd5bb96b3bc"
+  },
+  "subjectName": "Engineering Chemistry",
+  "subjectCode": "BTBS202",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 2,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "68373137199cccd5bb96b3bf"
+  },
+  "subjectName": "Engineering Mathematics - II",
+  "subjectCode": "BTBS201",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 2,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "68373137199cccd5bb96b3c0"
+  },
+  "subjectName": "Engineering Mechanics",
+  "subjectCode": "BTES203",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 2,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "68373137199cccd5bb96b3c1"
+  },
+  "subjectName": "Computer Programming in C",
+  "subjectCode": "BTES204",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 2,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "6837432a199cccd5bb96b3c3"
+  },
+  "subjectName": "Engineering Mathematics - III",
+  "subjectCode": "BTBS301",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 3,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "6837432a199cccd5bb96b3c4"
+  },
+  "subjectName": "Discrete Mathematics",
+  "subjectCode": "BTCOC302",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 3,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "6837432a199cccd5bb96b3c5"
+  },
+  "subjectName": "Data Structures",
+  "subjectCode": "BTCOC303",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 3,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "6837432a199cccd5bb96b3c6"
+  },
+  "subjectName": "Computer Architecture and Organization",
+  "subjectCode": "BTCOC304",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 12,
+  "semesterNumber": 3,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "68b28b64c6a39fdf64bbafae"
+  },
+  "subjectName": "Design Analysis and Algorithm",
+  "subjectCode": "BTCOC401",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 0,
+  "semesterNumber": 4,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "68b28b64c6a39fdf64bbafaf"
+  },
+  "subjectName": "Operating System",
+  "subjectCode": "BTCOC402",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "availableDocs": 0,
+  "semesterNumber": 4,
+  "slug": "eng-cse"
+},
+{
+  "_id": {
+    "$oid": "691364178684fdd5bc05ad14"
+  },
+  "subjectName": "Computer Network",
+  "subjectCode": "BTCOC602",
+  "streamName": "Engineering",
+  "branchName": "Computer Science and Engineering",
+  "semesterNumber": 6,
+  "availableDocs": 2,
+  "slug": "eng-cse",
+  "createdAt": {
+    "$date": "2025-11-11T16:28:07.989Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-12T09:33:54.722Z"
+  },
+  "__v": 0
+}]

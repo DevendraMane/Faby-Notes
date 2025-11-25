@@ -653,6 +653,7 @@ nav a:hover,
 .logout-btn {
   background-color: #f44336;
   color: white;
+  margin: 0px;
 }
 
 .login-btn:hover {
@@ -929,6 +930,12 @@ nav a:hover,
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .maincontent {
+  padding: 20px;
+  width: 100%;
+  margin: 0px;
+}
+
   .maincontent-header {
     flex-direction: column;
     align-items: flex-start;
@@ -1942,6 +1949,7 @@ nav a:hover,
 
   .upload-form-card {
     padding: 16px;
+    margin: 0px;
   }
 
   .upload-form-field-header {

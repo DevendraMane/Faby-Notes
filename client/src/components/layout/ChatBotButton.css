@@ -7,7 +7,7 @@
   flex-direction: row-reverse;
   align-items: flex-end;
   gap: 12px;
-  margin-bottom: 60px;
+  /* margin-bottom: 60px; */
   
 }
 
@@ -128,6 +128,7 @@
   .chatbot-button-container {
     bottom: 20px;
     right: 20px;
+    margin-bottom: 60px;
   }
 
   .chatbot-button {
