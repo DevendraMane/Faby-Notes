@@ -11,7 +11,6 @@ export const searchNotes = async (req, res) => {
       });
     }
 
-    // Escape special regex characters in the query
     const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
     const notes = await Notes.find({

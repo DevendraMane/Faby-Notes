@@ -4,7 +4,6 @@ export const getBooks = async (req, res) => {
   try {
     const { streamName } = req.params; // Get from URL parameter
 
-    // Add validation
     if (!streamName) {
       return res.status(400).json({ msg: "Stream name is required" });
     }

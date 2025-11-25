@@ -24,7 +24,6 @@ const branchSchema = new mongoose.Schema(
   { collection: "branches" }
 );
 
-// Add this before creating the model
 branchSchema.pre("save", function (next) {
   if (!this.slug && this.shortform) {
     this.slug = this.shortform.toLowerCase();

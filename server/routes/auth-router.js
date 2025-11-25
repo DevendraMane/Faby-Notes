@@ -38,7 +38,6 @@ authRouter.patch(
   authcontrollers.updateUserProfile
 );
 
-// Google OAuth callback route(login)
 authRouter.route("/google/callback").get(
   passport.authenticate("google", {
     failureRedirect: `${process.env.FRONTEND_URL}/login?error=google-auth-failed`,

@@ -22,13 +22,12 @@ const getBookmarks = async (req, res) => {
     const { page = 1, limit = 6 } = req.query;
     const skip = (page - 1) * limit;
 
-    // ✅ Populate bookmarks + uploader info
     const user = await User.findById(req.userId)
       .populate({
         path: "bookmarks",
         populate: {
-          path: "uploadedBy", // 👈 nested populate for uploader details
-          select: "username role", // only username & role
+          path: "uploadedBy",
+          select: "username role",
         },
         options: {
           sort: { uploadedAt: -1 },
@@ -67,7 +66,7 @@ const getBookmarks = async (req, res) => {
 const deleteBookmarks = async (req, res) => {
   try {
     const userId = req.userId;
-    const { noteIds } = req.body; // Expect array of noteIds
+    const { noteIds } = req.body;
 
     if (!Array.isArray(noteIds) || noteIds.length === 0) {
       return res.status(400).json({ message: "No noteIds provided" });
