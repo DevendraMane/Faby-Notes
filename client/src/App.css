@@ -674,6 +674,31 @@ nav a:hover,
 
 /* Mobile styles */
 @media (max-width: 768px) {
+
+  .main-content {
+    margin-top: 70px !important; /* reduce from 120px */
+    padding: 12px !important;    /* reduce padding */
+  }
+
+  .notes-detail-container {
+    padding: 10px !important;    /* narrower content */
+    margin: 0 !important;
+    width: 100% !important;      /* prevent overflow */
+  }
+
+  .notes-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bookmark-controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+
+@media (max-width: 768px) {
   .sidemenu {
     transform: translateX(-100%);
     width: 250px;

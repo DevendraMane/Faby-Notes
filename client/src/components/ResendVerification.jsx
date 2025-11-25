@@ -27,7 +27,7 @@ const ResendVerification = () => {
       if (response.ok) {
         toast.success("Verification email sent successfully!");
         setEmail("");
-        // Redirect to home after a short delay
+        // Redirect to home a time
         setTimeout(() => {
           navigate("/");
         }, 3000);

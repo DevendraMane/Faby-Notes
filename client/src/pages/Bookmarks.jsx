@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 // import Loader from "./Loader";
@@ -51,9 +50,7 @@ const Bookmarks = () => {
     };
     fetchData();
   }, [API, token, currentPage]);
-  // const indexOfLastNote = currentPage * notesPerPage;
-  // const indexOfFirstNote = indexOfLastNote - notesPerPage;
-  // const bookmarks = bookmarks.slice(indexOfFirstNote, indexOfLastNote);
+
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedNotes(new Set());

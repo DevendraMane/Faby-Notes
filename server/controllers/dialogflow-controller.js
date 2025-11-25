@@ -7,10 +7,8 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Temporary path to store decoded key
 const keyPath = path.join(__dirname, "dialogflow-key.json");
 
-// Decode and save key if not already saved
 if (!fs.existsSync(keyPath)) {
   const base64Data = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
   if (!base64Data)
@@ -37,13 +35,11 @@ export const detectIntent = async (req, res) => {
       });
     }
 
-    // Create session path
     const sessionPath = sessionClient.projectAgentSessionPath(
       projectId,
       sessionId
     );
 
-    // The text query request
     const request = {
       session: sessionPath,
       queryInput: {
@@ -54,11 +50,9 @@ export const detectIntent = async (req, res) => {
       },
     };
 
-    // Send request to Dialogflow
     const [response] = await sessionClient.detectIntent(request);
     const result = response.queryResult;
 
-    // Prepare response
     const botResponse = {
       success: true,
       message: result.fulfillmentText,
@@ -80,7 +74,6 @@ export const detectIntent = async (req, res) => {
   }
 };
 
-// Helper function to provide suggestions based on intent
 const getSuggestions = (intentName) => {
   const suggestions = {
     "college.name": [

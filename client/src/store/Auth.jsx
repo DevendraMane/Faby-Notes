@@ -1,5 +1,4 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import { data } from "react-router-dom";
 
 export const AuthContext = createContext();
 

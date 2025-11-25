@@ -12,10 +12,8 @@ export const getAllSubjectsData = async (req, res) => {
     };
 
     if (sem <= 2) {
-      // COMMON SUBJECTS → no slug required
       query.isCommon = true;
     } else {
-      // BRANCH SUBJECTS
       query.isCommon = false;
       query.slug = slug;
     }
@@ -38,7 +36,6 @@ export const getAllSubjectsData = async (req, res) => {
 export const updateSubject = async (req, res) => {
   try {
     const { _id } = req.params;
-    // console.log(`✅` + _id);
     const { subjectName, subjectCode } = req.body;
 
     const updatedSubject = await Subject.findByIdAndUpdate(
@@ -79,7 +76,6 @@ export const addSubject = async (req, res) => {
       availableDocs: 0,
     };
 
-    // FIRST YEAR → COMMON SUBJECT
     if (sem <= 2) {
       const branch = await Branch.findOne({ slug });
       newSubject.streamName = branch.streamName;
@@ -87,7 +83,6 @@ export const addSubject = async (req, res) => {
       newSubject.slug = "";
       newSubject.branchName = "";
 
-      // prevent duplicate subjectCode for common subjects
       const exists = await Subject.findOne({
         subjectCode: newSubject.subjectCode,
         semesterNumber: sem,
@@ -100,10 +95,7 @@ export const addSubject = async (req, res) => {
           message: "Common subject already exists for this semester",
         });
       }
-    }
-
-    // BRANCH-SPECIFIC
-    else {
+    } else {
       const branch = await Branch.findOne({ slug });
       if (!branch) {
         return res.status(404).json({ message: "Branch not found" });

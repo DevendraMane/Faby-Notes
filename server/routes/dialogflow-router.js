@@ -6,10 +6,8 @@ import {
 
 const router = express.Router();
 
-// Route to handle chat messages
 router.post("/chat", detectIntent);
 
-// Route to get predefined questions
 router.get("/questions", getPredefinedQuestions);
 
 export { router as dialogflowRouter };

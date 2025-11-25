@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useAuth } from "../store/Auth";
 import SelectFile from "../components/ui/UplodaFormUI/SelectFile";
@@ -13,7 +11,6 @@ import FormSubmitButton from "../components/ui/UplodaFormUI/FormSubmitButton";
 import FormNotesTitle from "../components/ui/UplodaFormUI/FormNotesTitle";
 
 const UploadForm = () => {
-  // Form state
   const [formData, setFormData] = useState({
     notesType: "",
     subjectName: "",
@@ -26,14 +23,12 @@ const UploadForm = () => {
   });
   const [subjects, setSubjects] = useState([]);
 
-  // Dropdown options state
   const [dropdownOptions, setDropdownOptions] = useState({
     subjects: [],
     branches: [],
     streams: [],
   });
 
-  // UI state
   const [loading, setLoading] = useState(false);
   const { API, token, streamData, branchData, fetchSubjectsData } = useAuth();
   const [uploading, setUploading] = useState(false);
@@ -43,15 +38,13 @@ const UploadForm = () => {
     subjectCode: false,
     branchName: false,
     streamName: false,
-    notesTitle: false, // Add custom title toggle
+    notesTitle: false,
   });
 
-  // Fetch dropdown options on component mount
   useEffect(() => {
     fetchDropdownOptions();
   }, [branchData, streamData]);
 
-  // Effect to fetch subjects when semester, branch, and stream are selected
   useEffect(() => {
     if (formData.semesterNumber && formData.branchName && formData.streamName) {
       const selectedBranch = dropdownOptions.branches.find(
@@ -66,12 +59,10 @@ const UploadForm = () => {
         );
       }
     } else {
-      // Clear subjects if prerequisites are not met
       setDropdownOptions((prev) => ({
         ...prev,
         subjects: [],
       }));
-      // Clear subject fields
       setFormData((prev) => ({
         ...prev,
         subjectName: "",
@@ -101,7 +92,6 @@ const UploadForm = () => {
     }
   };
 
-  // Fetch subjects based on selected semester and branch
   const fetchSubjects = async (semesterNumber, streamName, branchSlug) => {
     try {
       console.log("Fetching subjects with:", {
@@ -116,12 +106,10 @@ const UploadForm = () => {
         branchSlug
       );
 
-      // Corrected console.log to see the actual data
       console.log("Fetched subjects data:", subjectsData);
 
       setDropdownOptions((prev) => ({
         ...prev,
-        // Correctly pass the array of subjects
         subjects: subjectsData || [],
       }));
     } catch (error) {
@@ -134,20 +122,10 @@ const UploadForm = () => {
     }
   };
 
-  // Generate automatic title based on subjectCode and notesType
-  const generateNotesTitle = (subjectCode, notesType) => {
-    if (subjectCode && notesType) {
-      return `${subjectCode}_${notesType}.pdf`;
-    }
-    return "";
-  };
-
-  // Handle form input changes
   const handleInputChange = (field, value) => {
     setFormData((prev) => {
       const updated = { ...prev, [field]: value };
 
-      // Handle branch selection to auto-populate stream
       if (field === "branchName") {
         const selectedBranch = dropdownOptions.branches.find(
           (branch) => branch.branchName === value
@@ -159,18 +137,15 @@ const UploadForm = () => {
           updated.streamName = "";
         }
 
-        // Clear subject fields when branch changes
         updated.subjectName = "";
         updated.subjectCode = "";
       }
 
-      // Clear subject fields when semester changes
       if (field === "semesterNumber") {
         updated.subjectName = "";
         updated.subjectCode = "";
       }
 
-      // Auto-sync subject name and code when one is selected from dropdown
       if (field === "subjectName") {
         const selectedSubject = dropdownOptions.subjects.find(
           (subject) => subject.subjectName === value
@@ -193,7 +168,6 @@ const UploadForm = () => {
     });
   };
 
-  // Handle file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -213,7 +187,6 @@ const UploadForm = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -261,7 +234,6 @@ const UploadForm = () => {
         file: formData.file.name,
       });
 
-      // Submit to backend
       const response = await fetch(`${API}/api/upload/form`, {
         method: "POST",
         headers: {
@@ -278,7 +250,6 @@ const UploadForm = () => {
 
       setMessage({ type: "success", text: "File uploaded successfully!" });
 
-      // Reset form
       setFormData({
         notesType: "",
         subjectName: "",
@@ -290,7 +261,6 @@ const UploadForm = () => {
         notesTitle: "",
       });
 
-      // Reset custom inputs
       setCustomInputs({
         subjectName: false,
         subjectCode: false,
@@ -299,7 +269,6 @@ const UploadForm = () => {
         notesTitle: false,
       });
 
-      // Reset file input
       const fileInput = document.getElementById("upload-form-file-input");
       if (fileInput) fileInput.value = "";
     } catch (error) {
@@ -327,29 +296,24 @@ const UploadForm = () => {
         <h2 className="upload-form-title">📚 Upload Notes</h2>
 
         <form onSubmit={handleSubmit}>
-          {/* Message Alert */}
           {message.text && (
             <div className={`upload-form-alert ${message.type}`}>
               {message.text}
             </div>
           )}
 
-          {/* File Upload */}
           <SelectFile formData={formData} handleChange={handleFileChange} />
 
-          {/* Notes Type */}
           <FormNotesType
             onChange={(e) => handleInputChange("notesType", e.target.value)}
             value={formData.notesType}
           />
 
-          {/* Auto-generated Title with Custom Option */}
           <FormNotesTitle
             value={formData.notesTitle}
             onChange={(value) => handleInputChange("notesTitle", value)}
           />
 
-          {/* Stream Name */}
           <FormStreams
             onclick={() => handleCustomToggle("streamName")}
             customInput={customInputs.streamName}
@@ -358,7 +322,6 @@ const UploadForm = () => {
             options={dropdownOptions}
           />
 
-          {/* Branch Name */}
           <FormBranchName
             value={formData.branchName}
             onChange={(value) => handleInputChange("branchName", value)}
@@ -367,13 +330,11 @@ const UploadForm = () => {
             onToggleCustom={() => handleCustomToggle("branchName")}
           />
 
-          {/* Semester Number */}
           <FormSemesterNumber
             value={formData.semesterNumber}
             onChange={(value) => handleInputChange("semesterNumber", value)}
           />
 
-          {/* Subject Name */}
           <FormSubjectName
             value={formData.subjectName}
             onChange={(value) => handleInputChange("subjectName", value)}
@@ -385,7 +346,6 @@ const UploadForm = () => {
             }
           />
 
-          {/* Subject Code */}
           <FormSubjectCode
             value={formData.subjectCode}
             onChange={(value) => handleInputChange("subjectCode", value)}
@@ -397,7 +357,6 @@ const UploadForm = () => {
             }
           />
 
-          {/* Submit Button */}
           <FormSubmitButton uploading={uploading} onClick={handleSubmit} />
         </form>
       </div>

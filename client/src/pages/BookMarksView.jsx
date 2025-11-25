@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -113,9 +111,7 @@ export const BookMarksView = () => {
           <button className="tool-btn like-btn">
             <span>👍</span>0
           </button>
-          {/* <button className="tool-btn dislike-btn">
-            <span>👎</span>0
-          </button> */}
+
           <button
             className="tool-btn save-btn"
             onClick={() => handleBookmark()}

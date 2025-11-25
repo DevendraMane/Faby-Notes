@@ -9,7 +9,6 @@ const SearchBar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { API } = useAuth();
 
-  // ✅ Apply debounce with 500ms delay
   const debouncedQuery = useDebounce(searchQuery, 500);
 
   useEffect(() => {

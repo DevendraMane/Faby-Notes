@@ -17,7 +17,6 @@ const subjectsSchema = mongoose.Schema(
       required: true,
     },
 
-    // CHANGES START HERE 👇👇
     isCommon: {
       type: Boolean,
       default: false,
@@ -37,7 +36,6 @@ const subjectsSchema = mongoose.Schema(
       },
       lowercase: true,
     },
-    // CHANGES END HERE 👆👆
 
     semesterNumber: {
       type: Number,

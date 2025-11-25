@@ -1,4 +1,3 @@
-// src/components/ErrorBoundary.jsx
 import { useRouteError } from "react-router-dom";
 
 export const ErrorBoundary = () => {

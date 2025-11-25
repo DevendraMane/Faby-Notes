@@ -40,9 +40,6 @@ const VerifyEmail = () => {
 
   const handleGoToLogin = () => {
     navigate("/login");
-    // Assuming you have a function to open the login modal
-    // You might need to pass this through context or props
-    // document.dispatchEvent(new CustomEvent("open-login-modal"));
   };
 
   const renderContent = () => {
@@ -111,7 +108,6 @@ const VerifyEmail = () => {
   };
 
   const handleResendVerification = () => {
-    // Open a modal or redirect to a page where they can enter their email
     navigate("/resend-verification");
   };
 

@@ -33,20 +33,9 @@ const EditUser = () => {
     }
     setBranches(updatedBranches);
 
-    // ❌ Don't reset branch when loading from saved data
+    // Don't reset branch when loading from saved data
     if (!isInit) setBranch("");
   };
-
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setProfilePic(reader.result);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
 
   useEffect(() => {
     if (user?.streamName) {
@@ -101,15 +90,6 @@ const EditUser = () => {
               e.target.src = "/images/user-image.png";
             }}
           />
-          {/* <label className="profile-pic-upload">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-            />
-            Change Photo
-          </label> */}
         </div>
 
         <h1 className="edit-user-name">{user?.username || "Guest User"}</h1>
@@ -125,7 +105,7 @@ const EditUser = () => {
               value={stream}
               onChange={handleStreamChange}
               required
-              disabled={!canEdit} // 👈 disable if guest
+              disabled={!canEdit}
             >
               <option value="">Select Stream</option>
               <option value="Engineering">Engineering</option>
@@ -141,7 +121,7 @@ const EditUser = () => {
               value={branch}
               onChange={(e) => setBranch(e.target.value)}
               required
-              disabled={!canEdit} // 👈 disable if guest
+              disabled={!canEdit}
             >
               <option value="">Select Branch</option>
               {branches.map((branchOption, index) => (

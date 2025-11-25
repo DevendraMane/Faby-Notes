@@ -84,7 +84,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// Hash password before saving
 userSchema.pre("save", async function (next) {
   const user = this;
 
@@ -102,7 +101,6 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-// Generate JWT token
 userSchema.methods.generateToken = function () {
   try {
     return jwt.sign(
@@ -122,7 +120,6 @@ userSchema.methods.generateToken = function () {
   }
 };
 
-// Compare password
 userSchema.methods.comparePassword = async function (password) {
   try {
     return await bcrypt.compare(password, this.password);

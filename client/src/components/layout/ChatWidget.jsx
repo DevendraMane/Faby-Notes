@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
 import "./ChatWidget.css";
 import { useAuth } from "../../store/Auth";
@@ -165,7 +163,6 @@ const ChatWidget = ({ isOpen, onClose }) => {
                   })}
                 </span>
 
-                {/* Show suggestions for bot messages */}
                 {message.sender === "bot" &&
                   message.suggestions &&
                   message.suggestions.length > 0 && (

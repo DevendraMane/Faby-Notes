@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import ChatWidget from "./ChatWidget";
@@ -9,7 +7,6 @@ const ChatBotButton = () => {
   const location = useLocation();
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  // Only show on / route
   if (location.pathname !== "/") {
     return null;
   }

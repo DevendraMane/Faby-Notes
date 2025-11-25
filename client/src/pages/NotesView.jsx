@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -21,10 +19,8 @@ export const NotesView = () => {
       try {
         setLoading(true);
 
-        // Step 1: fetch all notes for this subject code
         const notesData = await fetchNotesWithSubjectCode(subjectCode);
 
-        // Step 2: find the exact note by noteId (convert _id to string)
         const specificNote = notesData?.find(
           (n) => n._id.toString() === noteId
         );
@@ -33,7 +29,6 @@ export const NotesView = () => {
           throw new Error("Note not found");
         }
 
-        // Step 3: set that note
         setNote(specificNote);
       } catch (err) {
         console.error("Error fetching note:", err);
@@ -55,22 +50,7 @@ export const NotesView = () => {
   };
 
   const handleDownload = () => {
-    // Opens in new tab
     window.open(note.cloudinaryUrl, "_blank");
-  };
-
-  const handleLikeClick = () => {};
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
   };
 
   const handleBookmark = async () => {
@@ -112,7 +92,6 @@ export const NotesView = () => {
           text: shareText,
           url: shareUrl,
         });
-        // toast.success("Shared successfully 🚀");
       } catch (err) {
         console.error("Error sharing:", err);
         toast.error("Share canceled or failed");
@@ -135,32 +114,16 @@ export const NotesView = () => {
   return (
     <div className="notes-viewer-container">
       <div className="pdf-viewer-toolbar">
-        {/* <button className="download-btn" onClick={handleDownload}>
-          <span className="download-icon">⬇</span>
-          Uploader
-        </button> */}
         <div className="note-title-section">
           <h2 className="viewer-title">{note.notesTitle}</h2>
           <p className="uploaded-by">uploaded by {note.uploadedBy.username}</p>
         </div>
         <div className="viewer-tools">
-          {/* <button className="tool-btn">
-            <span>✨</span>
-            AI Tools
-          </button> */}
-
           <button className="download-btn" onClick={handleDownload}>
             <span className="download-icon">⬇</span>
             Download
           </button>
-          {/* <button
-            onClick={() => {
-              handleLikeClick();
-            }}
-            className="tool-btn like-btn"
-          >
-            <span>👍</span>0
-          </button> */}
+
           <button
             className="tool-btn save-btn"
             onClick={() => handleBookmark()}

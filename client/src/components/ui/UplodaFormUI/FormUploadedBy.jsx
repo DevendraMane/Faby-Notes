@@ -1,5 +1,3 @@
-"use client";
-
 const FormUploadedBy = ({ value, onChange }) => {
   return (
     <div className="upload-form-field">

@@ -1,6 +1,5 @@
 import Branch from "../models/branch-model.js";
 
-// Get all branches
 const getAllBranches = async (req, res) => {
   try {
     const branches = await Branch.find({});
@@ -16,29 +15,6 @@ const getAllBranches = async (req, res) => {
   }
 };
 
-// Get branches by stream ID
-// !No need for this code:
-// const getBranchesByStream = async (req, res) => {
-//   try {
-//     const { streamId } = req.params;
-//     console.log("Fetching branches for streamId:", streamId);
-
-//     // Find branches with the streamId as a string (as stored in your DB)
-//     const branches = await Branch.find({ streamId: streamId });
-
-//     console.log(`Found ${branches.length} branches for streamId ${streamId}`);
-
-//     res.status(200).json({
-//       message: "Branches fetched successfully",
-//       branches,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching branches by stream:", error);
-//     res.status(500).json({ msg: "Server error", error: error.message });
-//   }
-// };
-
-// Get branch by slug
 const getBranchBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -62,7 +38,6 @@ const getBranchBySlug = async (req, res) => {
   }
 };
 
-// Get branches by stream name
 const getBranchesByStreamName = async (req, res) => {
   try {
     const { streamName } = req.params;

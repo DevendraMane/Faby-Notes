@@ -222,7 +222,6 @@ const getUser = async (req, res) => {
         followers: user.followers,
         uploads: user.uploads,
 
-        // ✅ Include these two fields so frontend sees saved values
         streamName: user.streamName,
         branchName: user.branchName,
       },
@@ -261,27 +260,23 @@ const updateUserProfile = async (req, res) => {
     const userId = req.userId; // Extracted from auth middleware
     const { streamName, branchName } = req.body;
 
-    // ✅ Validate input
     if (!streamName || !branchName) {
       return res
         .status(400)
         .json({ message: "Stream and Branch are required" });
     }
 
-    // ✅ Find user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // ✅ Restrict only teacher/student to update
     if (!["student", "teacher"].includes(user.role)) {
       return res
         .status(403)
         .json({ message: "You are not allowed to update this information" });
     }
 
-    // ✅ Update fields
     user.streamName = streamName;
     user.branchName = branchName;
     await user.save();
@@ -301,7 +296,6 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-// Add googleAuthCallback to your exports
 export default {
   register,
   login,

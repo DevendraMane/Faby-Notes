@@ -6,19 +6,16 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import "dotenv/config";
 
-// Configure Cloudinary with environment variables
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Configure multer with Cloudinary storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
     try {
-      // Extract metadata from request body
       const { streamName, branchName, semesterNumber, subjectName } = req.body;
 
       console.log("Upload params:", {
@@ -28,12 +25,10 @@ const storage = new CloudinaryStorage({
         subjectName,
       });
 
-      // Format names for folder structure (replace spaces with underscores)
       const branchNameFormatted = branchName?.replace(/\s+/g, "_");
       const subjectNameFormatted = subjectName?.replace(/\s+/g, "_");
       const streamNameFormatted = streamName?.replace(/\s+/g, "_");
 
-      // Create folder path
       const folderPath = `FabyNotes/${streamNameFormatted}/${branchNameFormatted}/semester/${semesterNumber}/${subjectNameFormatted}`;
 
       console.log("Cloudinary folder path:", folderPath);
@@ -41,7 +36,7 @@ const storage = new CloudinaryStorage({
       return {
         folder: folderPath,
         allowed_formats: ["pdf"],
-        resource_type: "raw", // For non-image files like PDFs
+        resource_type: "raw",
         use_filename: true,
         unique_filename: true,
       };
@@ -75,14 +70,12 @@ export const saveUploads = async (req, res) => {
     console.log("Upload request body:", req.body);
     console.log("Upload file:", req.file);
 
-    // Check if file was uploaded first
     if (!req.file) {
       return res.status(400).json({
         message: "No file uploaded",
       });
     }
 
-    // Check if req.body exists
     if (!req.body) {
       return res.status(400).json({
         message: "No form data received",
@@ -99,7 +92,6 @@ export const saveUploads = async (req, res) => {
       semesterNumber,
     } = req.body;
 
-    // Validate required fields
     if (
       !notesType ||
       !subjectName ||
@@ -122,10 +114,8 @@ export const saveUploads = async (req, res) => {
       });
     }
 
-    // Get Cloudinary URL from uploaded file
     const cloudinaryUrl = req.file.path;
 
-    // Generate title if not provided
     const finalNotesTitle = `${notesTitle}.pdf`;
 
     console.log("Creating notes document with:", {
@@ -139,7 +129,6 @@ export const saveUploads = async (req, res) => {
       semesterNumber: Number.parseInt(semesterNumber),
     });
 
-    // Create notes document
     const notesUploaded = await Notes.create({
       notesTitle: finalNotesTitle,
       notesType,
@@ -161,15 +150,6 @@ export const saveUploads = async (req, res) => {
       { subjectCode: subjectCode },
       { $inc: { availableDocs: 1 } }
     );
-    // if (!updatedSubject) {
-    //   console.warn(`⚠️ No subject found for code ${subjectCode}`);
-    // }
-
-    // to implement note deletion
-    //     await Subject.findOneAndUpdate(
-    //   { subjectCode },
-    //   { $inc: { availableDocs: -1 } }
-    // );
 
     res.status(201).json({
       message: "Notes Uploaded Successfully 📝",
@@ -182,7 +162,6 @@ export const saveUploads = async (req, res) => {
   } catch (error) {
     console.error("Error Uploading Notes ➡️🚫📝:", error);
 
-    // Delete uploaded file from Cloudinary if database save fails
     if (req.file && req.file.public_id) {
       try {
         console.log("Deleting file from Cloudinary:", req.file.public_id);
@@ -200,6 +179,4 @@ export const saveUploads = async (req, res) => {
     });
   }
 };
-
-// Export both the upload middleware and the controller
 export default { saveUploads, upload };

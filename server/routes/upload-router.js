@@ -4,7 +4,6 @@ import { authMiddleware } from "../middleware/auth-middleware.js";
 
 export const uploadRouter = express.Router();
 
-// here upload is a multer middleware
 uploadRouter
   .route("/form")
   .post(

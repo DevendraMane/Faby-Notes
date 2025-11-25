@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -12,13 +10,6 @@ const StreamViseBooks = () => {
   const { fetchStreamViseBooks } = useAuth();
   const { streamName } = useParams();
   const navigate = useNavigate();
-
-  // console.log("Notes params:", {
-  //   subjectCode,
-  //   semesterNumber,
-  //   slug,
-  //   notesType,
-  // });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,14 +27,8 @@ const StreamViseBooks = () => {
       }
     };
 
-    fetchData(); // ✅ Call it here
+    fetchData();
   }, [streamName, fetchStreamViseBooks]);
-
-  // const handleBackClick = () => {
-  //   navigate(
-  //     `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`
-  //   );
-  // };
 
   const handleBookClicked = (streamName, notesTitle) => {
     navigate(`/books/${streamName}/${notesTitle}`);
@@ -98,9 +83,6 @@ const StreamViseBooks = () => {
     <>
       <div className="notes-detail-container">
         <div className="subjects-header">
-          {/* <button className="back-button" onClick={handleBackClick}>
-          ← Back to Subjects
-        </button> */}
           <h1 className="books-title">Books Available for {streamName}</h1>
         </div>
         {books.length > 0 ? (

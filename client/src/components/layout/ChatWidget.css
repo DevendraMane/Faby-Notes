@@ -1,4 +1,4 @@
-/* ChatWidget.css */
+
 .chat-widget-overlay {
   position: fixed;
   bottom: 80px;
@@ -289,7 +289,7 @@
   transform: translateY(-1px);
 }
 
-/* Suggestions styling */
+
 .suggestions {
   margin-top: 12px;
   padding-top: 10px;
@@ -327,7 +327,7 @@
   margin-bottom: 0;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 480px) {
   .chat-widget {
     width: 100%;

@@ -13,10 +13,8 @@ export const getNotes = async (req, res) => {
       limit,
     });
 
-    // Pagination logic
     const skip = (page - 1) * limit;
 
-    // Fetch notes with pagination
     const notes = await Notes.find({ subjectCode })
       .populate("uploadedBy", "username role")
       .sort({ uploadedAt: -1 })
@@ -24,7 +22,6 @@ export const getNotes = async (req, res) => {
       .limit(Number(limit))
       .lean();
 
-    // Count total notes for pagination info
     const totalNotes = await Notes.countDocuments({ subjectCode });
     const totalPages = Math.ceil(totalNotes / limit);
 

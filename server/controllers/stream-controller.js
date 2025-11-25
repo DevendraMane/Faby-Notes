@@ -3,11 +3,9 @@ import Stream from "../models/stream-model.js";
 // ****** STREAM CONTROLLER ****** //
 const streams = async (req, res) => {
   try {
-    // Fetch all streams from the database
     const streamsData = await Stream.find({});
     // console.log("Streams fetched:", streamsData);
 
-    // Return the streams data
     res.status(200).json({
       message: "Streams fetched successfully",
       streams: streamsData,

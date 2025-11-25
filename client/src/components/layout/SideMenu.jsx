@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "../../store/Auth";
@@ -25,7 +23,7 @@ export const SideMenu = ({ onToggle }) => {
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
 
-    // Listen for sidebar toggle event from header (only for desktop)
+    // (only for desktop)
     const handleToggleSidebar = () => {
       if (!isMobile) {
         toggleSidebar();
@@ -111,24 +109,6 @@ export const SideMenu = ({ onToggle }) => {
             )}
           </div>
 
-          {/* Implement this later */}
-          {/* {(!collapsed || isMobile) && isLoggedIn && isTeacher && (
-            <div className="sidemenu-stats">
-              <div className="stat-item">
-                <span className="stat-number">{user.followers || 0}</span>
-                <span className="stat-label">followers</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">{user.likesCount || 0}</span>
-                <span className="stat-label">likes</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">{user.uploads || 0}</span>
-                <span className="stat-label">uploads</span>
-              </div>
-            </div>
-          )} */}
-
           {(!collapsed || isMobile) && isLoggedIn && isTeacher && (
             <button className="contribute-btn" onClick={handleUploadForm}>
               + Upload
@@ -174,24 +154,7 @@ export const SideMenu = ({ onToggle }) => {
                 )}
               </Link>
             </li>
-            {/* <li className="sidemenu-nav-item">
-              <Link
-                to="/books"
-                className="sidemenu-nav-link"
-                onClick={handleNavClick}
-              >
-                <i className="icon-books">📖</i>
-                {(!collapsed || isMobile) && (
-                  <span className="nav-text">Books</span>
-                )}
-              </Link>
-            </li> */}
           </ul>
-          {/* <img
-            className="under-construction"
-            src="/images/under_construction1.png"
-            alt="UC"
-          /> */}
         </div>
 
         {!isMobile && (

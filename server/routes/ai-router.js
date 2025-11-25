@@ -20,7 +20,7 @@ router.post("/chat", async (req, res) => {
       return res.status(400).json({ error: "Message is required" });
     }
 
-    // Prepare conversation context
+    // conversation context
     const messages = [
       {
         role: "system",
@@ -31,7 +31,7 @@ router.post("/chat", async (req, res) => {
       },
     ];
 
-    // Add conversation history for context (last 10 messages)
+    // conversation history for context (last 10 messages)
     if (conversationHistory && conversationHistory.length > 0) {
       conversationHistory.slice(-10).forEach((msg) => {
         messages.push({
@@ -41,18 +41,18 @@ router.post("/chat", async (req, res) => {
       });
     }
 
-    // Add current message
+    // current message
     messages.push({
       role: "user",
       content: message,
     });
 
-    // Call GROQ API with updated model
+    // Call API with updated model
     const completion = await openai.chat.completions.create({
-      // Use one of these currently supported models:
-      model: "llama-3.3-70b-versatile", // Recommended replacement
-      // model: "llama-3.1-8b-instant", // Faster, lighter option
-      // model: "mixtral-8x7b-32768", // Alternative option
+      // supported models:
+      model: "llama-3.3-70b-versatile",
+      // model: "llama-3.1-8b-instant",
+      // model: "mixtral-8x7b-32768",
       messages: messages,
       temperature: 0.7,
       max_tokens: 1024,

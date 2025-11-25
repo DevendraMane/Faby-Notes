@@ -3,10 +3,8 @@ import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-// import ResendVerification from "./ResendVerification";
 import { useAuth } from "../../store/Auth";
 
-// Set the app element for accessibility
 Modal.setAppElement("#root");
 
 const LogInModal = ({ isOpen, onClose }) => {
@@ -22,7 +20,7 @@ const LogInModal = ({ isOpen, onClose }) => {
 
   const { storeTokenToLocalStrorage, API } = useAuth();
 
-  // Custom styles for the modal
+  // styles for the modal
   const customModalStyles = {
     content: {
       top: "50%",

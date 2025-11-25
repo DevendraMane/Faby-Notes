@@ -16,7 +16,7 @@ const FeedBackModal = ({ isOpen, onClose }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Custom styles for the modal
+  // styles for the modal
   const customModalStyles = {
     content: {
       top: "50%",

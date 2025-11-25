@@ -34,7 +34,7 @@
   flex: 1;
 }
 
-/* Enhanced bookmark controls styling */
+
 .bookmark-controls {
   display: flex;
   align-items: center;
@@ -154,8 +154,8 @@
 
 .note-card-drive:hover .note-checkbox,
 .note-card-drive.selected .note-checkbox {
-  opacity: 1;              /* visible on hover or when selected */
-  pointer-events: auto;    /* clickable */
+  opacity: 1;             
+  pointer-events: auto;  
 }
 
 .note-card-drive:hover {
@@ -190,8 +190,8 @@
   top: 12px;
   left: 12px;
   z-index: 2;
-  opacity: 0;              /* hidden by default */
-  pointer-events: none;    /* unclickable when hidden */
+  opacity: 0;             
+  pointer-events: none;    
   transition: opacity 0.2s ease;
 }
 
@@ -401,5 +401,66 @@
 
   .pagination-container {
     flex-wrap: wrap;
+  }
+}
+
+/* 📱 MOBILE COMPACT CARD STYLING — FINAL FIX */
+@media (max-width: 768px) {
+
+  .notes-detail-container {
+    padding: 10px !important;
+    margin: 0 !important;
+  }
+
+  .notes-grid-container {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .note-card-drive {
+    padding: 10px !important;
+    border-radius: 10px !important;
+  }
+
+  .note-card-header {
+    margin-bottom: 10px !important;
+    margin-left: 25px !important;
+  }
+
+  .note-title-text {
+    font-size: 13px !important;
+  }
+
+  .file-icon {
+    font-size: 14px !important;
+  }
+
+  .note-preview-section {
+    height: 90px !important;
+  }
+
+  .file-type-icon {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 22px !important;
+  }
+
+  .upload-info {
+    font-size: 10px !important;
+  }
+
+  .note-metadata-section {
+    padding-top: 6px !important;
+  }
+
+  .bookmark-controls {
+    padding: 10px !important;
+    gap: 10px !important;
+  }
+
+  .download-button,
+  .remove-button {
+    padding: 8px 14px !important;
+    font-size: 13px !important;
   }
 }

@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import "dotenv/config"; // Automatically loads .env variables
+import "dotenv/config";
 
-// const URI = `mongodb://127.0.0.1:27017/faby-notes`;
 const URI = process.env.MONGODB_URI;
 // mongoose.connect(URI);
 

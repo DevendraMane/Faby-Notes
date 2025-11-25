@@ -1,4 +1,3 @@
-"use client";
 import { Pencil, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -44,14 +43,12 @@ export const Subjects = () => {
       try {
         setLoading(true);
 
-        // First, fetch the branch data and wait for it
         const branchData = await fetchBranchWithSlug(slug);
         if (!branchData) {
           throw new Error("Branch not found");
         }
         setBranch(branchData);
 
-        // Then fetch subjects data using the branch information
         const subjectsData = await fetchSubjectsData(
           semesterNumber,
           branchData.streamName,
@@ -81,7 +78,6 @@ export const Subjects = () => {
     navigate(`/branch/${slug}`);
   };
 
-  // Fixed navigation to include subjectCode in the URL
   const handleSubjectClick = (subjectCode) => {
     navigate(
       `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`
@@ -89,7 +85,7 @@ export const Subjects = () => {
   };
 
   const handleEditClick = (e, subject) => {
-    e.stopPropagation(); // Prevent subject click navigation
+    e.stopPropagation();
     setEditingSubject(subject);
     setEditFormData({
       subjectName: subject.subjectName,
@@ -128,7 +124,6 @@ export const Subjects = () => {
 
       if (response.ok) {
         const updatedSubject = await response.json();
-        // Update the subjects list with the updated subject
         setSubjects((prev) =>
           prev.map((subject) =>
             subject._id === editingSubject._id

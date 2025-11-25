@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import RegistrationModal from "../modals/RegistrationModal";
@@ -314,7 +312,6 @@ export const Header = () => {
         </div>
       )}
 
-      {/* Pass Modal State and Handlers as Props */}
       <RegistrationModal
         isOpen={isRegistrationModalOpen}
         onClose={closeRegistrationModal}

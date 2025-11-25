@@ -1,12 +1,9 @@
-"use client";
-
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../store/Auth";
 import { toast } from "react-toastify";
 
-// Set the app element for accessibility
 Modal.setAppElement("#root");
 
 const RegistrationModal = ({ isOpen, onClose }) => {
@@ -36,12 +33,12 @@ const RegistrationModal = ({ isOpen, onClose }) => {
 
   const customModalStyles = {
     content: {
-      top: "50%", // change from "55%" to "50%"
+      top: "50%",
       left: "50%",
       right: "auto",
       bottom: "auto",
       marginRight: "-50%",
-      transform: "translate(-50%, -50%)", // centers it both ways
+      transform: "translate(-50%, -50%)",
       borderRadius: "16px",
       padding: "32px",
       maxWidth: "460px",
@@ -55,7 +52,6 @@ const RegistrationModal = ({ isOpen, onClose }) => {
     },
   };
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -194,7 +190,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
           <div className="form-group">
             <label htmlFor="cnfpassword">Confirm Password</label>
             <input
-              type="password" // Changed from "cnfpassword" to "password" for proper input type
+              type="password"
               id="cnfpassword"
               name="cnfpassword"
               value={formData.cnfpassword}
@@ -202,10 +198,6 @@ const RegistrationModal = ({ isOpen, onClose }) => {
               required
             />
           </div>
-          {/* <div className="teacherornot">
-            <input type="checkbox" name="teacherornot" id="teacherornot" />
-            <label htmlFor="teacherornot"> Are you a Teacher </label>
-          </div> */}
           <button
             type="submit"
             className="submit-button"

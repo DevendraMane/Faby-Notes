@@ -4,7 +4,6 @@ import User from "../models/user-model.js";
 // ****** FEEDBACK CONTROLLER ****** //
 export const feedback = async (req, res, next) => {
   try {
-    // Get user ID from auth middleware
     const userId = req.userId;
 
     if (!userId) {
@@ -13,19 +12,16 @@ export const feedback = async (req, res, next) => {
         .json({ message: "Unauthorized: User not authenticated" });
     }
 
-    // Get user data
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Validate message
     if (!req.body.message || req.body.message.trim() === "") {
       return res.status(400).json({ message: "Feedback message is required" });
     }
 
-    // Create feedback with user data
     const feedbackData = {
       username: user.username,
       email: user.email,
