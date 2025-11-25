@@ -230,7 +230,7 @@ const ChatWidget = ({ isOpen, onClose }) => {
               onKeyPress={handleKeyPress}
               placeholder="Type your message here..."
               className="chat-input"
-              autoFocus
+              // autoFocus
             />
             <button
               type="submit"
