@@ -1,11 +1,11 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 // import Loader from "./Loader";
 import { useAuth } from "../store/Auth";
 import "./Bookmarks.css";
-
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 const Bookmarks = () => {
   const [bookmarks, setBookMarks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,20 +14,16 @@ const Bookmarks = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
   const [showDropdown, setShowDropdown] = useState(null);
   const notesPerPage = 6;
-
-  const { API, token } = useAuth();
+  const { API, isLoggedIn, token } = useAuth();
   const { subjectCode, semesterNumber, slug, notesType } = useParams();
   const navigate = useNavigate();
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-
         const res = await fetch(
           `${API}/api/bookmark/user-bookmarks?page=${currentPage}&limit=${notesPerPage}`,
           {
@@ -36,7 +32,6 @@ const Bookmarks = () => {
             },
           }
         );
-
         if (res.ok) {
           const data = await res.json();
           setBookMarks(data.bookmarks || []);
@@ -54,14 +49,11 @@ const Bookmarks = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [API, token, currentPage]);
-
   // const indexOfLastNote = currentPage * notesPerPage;
   // const indexOfFirstNote = indexOfLastNote - notesPerPage;
   // const bookmarks = bookmarks.slice(indexOfFirstNote, indexOfLastNote);
-
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedNotes(new Set());
@@ -71,50 +63,39 @@ const Bookmarks = () => {
     }
     setSelectAll(!selectAll);
   };
-
   const handleNoteSelect = (noteId, event) => {
     event.stopPropagation();
     const newSelected = new Set(selectedNotes);
-
     if (newSelected.has(noteId)) {
       newSelected.delete(noteId);
     } else {
       newSelected.add(noteId);
     }
-
     setSelectedNotes(newSelected);
     setSelectAll(newSelected.size === bookmarks.length);
   };
-
   const handleRightClick = (noteId, event) => {
     if (event.ctrlKey && event.button === 2) {
       event.preventDefault();
-
       const newSelected = new Set(selectedNotes);
-
       if (newSelected.has(noteId)) {
         newSelected.delete(noteId);
       } else {
         newSelected.add(noteId);
       }
-
       setSelectedNotes(newSelected);
       setSelectAll(newSelected.size === bookmarks.length);
-
       console.log("[v0] Ctrl+Right-click selection:", noteId);
     }
   };
-
   const handleDownloadSelected = async () => {
     if (selectedNotes.size === 0) {
       alert("Please select notes to download");
       return;
     }
-
     const selectedBookmarks = bookmarks.filter((note) =>
       selectedNotes.has(note._id)
     );
-
     for (const note of selectedBookmarks) {
       try {
         const response = await fetch(note.cloudinaryUrl);
@@ -133,14 +114,11 @@ const Bookmarks = () => {
       }
     }
   };
-
   const handleRemoveBookmark = async (noteId, event) => {
     event.stopPropagation();
-
     if (!window.confirm("Are you sure you want to remove this bookmark?")) {
       return;
     }
-
     try {
       const res = await fetch(`${API}/api/bookmark/${noteId}`, {
         method: "DELETE",
@@ -148,9 +126,7 @@ const Bookmarks = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (!res.ok) throw new Error("Failed to remove bookmark");
-
       setBookMarks((prev) => prev.filter((note) => note._id !== noteId));
       setSelectedNotes((prev) => {
         const newSet = new Set(prev);
@@ -163,19 +139,16 @@ const Bookmarks = () => {
       alert("Failed to remove bookmark");
     }
   };
-
   const handleRemoveSelected = async () => {
     if (selectedNotes.size === 0) {
       alert("Please select notes to remove");
       return;
     }
-
     if (
       !window.confirm("Are you sure you want to remove selected bookmarks?")
     ) {
       return;
     }
-
     try {
       const res = await fetch(
         `${API}/api/bookmark/user-bookmarks/remove-selected`,
@@ -188,11 +161,9 @@ const Bookmarks = () => {
           body: JSON.stringify({ noteIds: Array.from(selectedNotes) }),
         }
       );
-
       const data = await res.json();
       if (!res.ok)
         throw new Error(data.message || "Failed to remove bookmarks");
-
       setBookMarks(data.bookmarks || []);
       setSelectedNotes(new Set());
       setSelectAll(false);
@@ -201,7 +172,6 @@ const Bookmarks = () => {
       alert("Failed to remove bookmarks");
     }
   };
-
   const handleBackClick = () => {
     if (navigate) {
       navigate(
@@ -211,7 +181,6 @@ const Bookmarks = () => {
       window.history.back();
     }
   };
-
   const handleNoteClick = (note) => {
     if (navigate) {
       navigate(
@@ -221,11 +190,9 @@ const Bookmarks = () => {
       console.log("Navigate to note:", note);
     }
   };
-
   const getFileIcon = (fileName, fileType) => {
     const extension =
       fileName?.split(".").pop()?.toLowerCase() || fileType?.toLowerCase();
-
     switch (extension) {
       case "pdf":
         return "📄";
@@ -242,11 +209,9 @@ const Bookmarks = () => {
         return "📄";
     }
   };
-
   const getFileTypeColor = (fileName, fileType) => {
     const extension =
       fileName?.split(".").pop()?.toLowerCase() || fileType?.toLowerCase();
-
     switch (extension) {
       case "pdf":
         return "#ea4335";
@@ -263,10 +228,20 @@ const Bookmarks = () => {
         return "#4285f4";
     }
   };
-
-  // if (loading) return <Loader />;
-  if (error) return <div className="error-message">{error}</div>;
-
+  if (loading) {
+    return <div className="loading-message">Loading bookmarks...</div>;
+  }
+  if (!isLoggedIn) {
+    return (
+      <div className="error-message">
+        Login/Register First
+        <Link to="/login">Go to Login</Link>
+      </div>
+    );
+  }
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
   return (
     <div className="notes-detail-container">
       <div className="notes-detail-header">
@@ -274,7 +249,6 @@ const Bookmarks = () => {
           ← Back to Notes Type
         </button>
         <h2 className="notes-detail-title">Your Bookmarks</h2>
-
         <div className="bookmark-controls">
           <div className="select-control">
             <input
@@ -294,7 +268,6 @@ const Bookmarks = () => {
           >
             Remove ({selectedNotes.size})
           </button>
-
           <button
             className="download-button"
             onClick={handleDownloadSelected}
@@ -304,7 +277,6 @@ const Bookmarks = () => {
           </button>
         </div>
       </div>
-
       {bookmarks.length > 0 ? (
         <>
           <div className="notes-grid-container">
@@ -325,7 +297,6 @@ const Bookmarks = () => {
                     onClick={(e) => e.stopPropagation()}
                   />
                 </div>
-
                 <div className="note-card-header">
                   <div className="note-title-section">
                     <span className="file-icon">
@@ -333,7 +304,6 @@ const Bookmarks = () => {
                     </span>
                     <span className="note-title-text">{note.notesTitle}</span>
                   </div>
-
                   <div className="note-menu-container">
                     <button
                       className="note-menu-button"
@@ -358,7 +328,6 @@ const Bookmarks = () => {
                     )}
                   </div>
                 </div>
-
                 <div className="note-preview-section">
                   <div
                     className="file-type-icon"
@@ -372,7 +341,6 @@ const Bookmarks = () => {
                     {getFileIcon(note.notesTitle, note.fileType)}
                   </div>
                 </div>
-
                 <div className="note-metadata-section">
                   <div className="user-info">
                     <span className="upload-info">
@@ -387,7 +355,6 @@ const Bookmarks = () => {
               </div>
             ))}
           </div>
-
           {totalPages > 1 && (
             <div className="pagination-container">
               {console.log(
@@ -398,7 +365,6 @@ const Bookmarks = () => {
                 "Total bookmarks:",
                 bookmarks.length
               )}
-
               <button
                 className="pagination-arrow"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -406,7 +372,6 @@ const Bookmarks = () => {
               >
                 ←
               </button>
-
               {[...Array(totalPages)].map((_, index) => (
                 <button
                   key={index + 1}
@@ -418,7 +383,6 @@ const Bookmarks = () => {
                   {index + 1}
                 </button>
               ))}
-
               <button
                 className="pagination-arrow"
                 onClick={() =>
@@ -439,5 +403,4 @@ const Bookmarks = () => {
     </div>
   );
 };
-
 export default Bookmarks;
