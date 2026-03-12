@@ -36,7 +36,7 @@ export const BookMarksView = () => {
 
   const handleBackClick = () => {
     navigate(
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${notesType}`
+      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${notesType}`,
     );
   };
 
@@ -76,7 +76,6 @@ export const BookMarksView = () => {
 
         const data = await res.json();
         toast.success("Note saved! 🔖");
-        console.log("Bookmarks:", data.bookmarks);
       } catch (err) {
         console.error("Bookmark error:", err);
         toast.error("Could not save note");

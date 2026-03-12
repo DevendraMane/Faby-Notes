@@ -74,7 +74,7 @@ app.use(
       maxAge: 24 * 60 * 60 * 1000, // 24 hrs
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
-  })
+  }),
 );
 
 // ***** PASSPORT MIDDLEWARE ***** //

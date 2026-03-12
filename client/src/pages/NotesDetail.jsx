@@ -17,13 +17,6 @@ const NotesDetail = () => {
   const { subjectCode, semesterNumber, slug, notesType } = useParams();
   const navigate = useNavigate();
 
-  console.log("Notes params:", {
-    subjectCode,
-    semesterNumber,
-    slug,
-    notesType,
-  });
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,7 +26,8 @@ const NotesDetail = () => {
         // Filter notes by type if needed
         const filteredNotes =
           notesData?.filter(
-            (note) => note.notesType?.toLowerCase() === notesType?.toLowerCase()
+            (note) =>
+              note.notesType?.toLowerCase() === notesType?.toLowerCase(),
           ) || [];
 
         setNotes(filteredNotes);
@@ -93,8 +87,6 @@ const NotesDetail = () => {
 
       setSelectedNotes(newSelected);
       setSelectAll(newSelected.size === currentNotes.length);
-
-      console.log("[v0] Ctrl+Right-click selection:", noteId);
     }
   };
 
@@ -105,7 +97,7 @@ const NotesDetail = () => {
     }
 
     const selectedNotesData = notes.filter((note) =>
-      selectedNotes.has(note._id)
+      selectedNotes.has(note._id),
     );
 
     for (const note of selectedNotesData) {
@@ -129,13 +121,13 @@ const NotesDetail = () => {
 
   const handleBackClick = () => {
     navigate(
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`
+      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`,
     );
   };
 
   const handleNoteClick = (noteId) => {
     navigate(
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${notesType}/note/${noteId}`
+      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${notesType}/note/${noteId}`,
     );
   };
 
@@ -250,7 +242,7 @@ const NotesDetail = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowDropdown(
-                          showDropdown === note._id ? null : note._id
+                          showDropdown === note._id ? null : note._id,
                         );
                       }}
                     >
@@ -279,7 +271,7 @@ const NotesDetail = () => {
                     style={{
                       backgroundColor: getFileTypeColor(
                         note.notesTitle,
-                        note.fileType
+                        note.fileType,
                       ),
                     }}
                   >
@@ -301,15 +293,6 @@ const NotesDetail = () => {
 
           {totalPages > 1 && (
             <div className="pagination-container">
-              {console.log(
-                "[v0] Pagination - Current page:",
-                currentPage,
-                "Total pages:",
-                totalPages,
-                "Total notes:",
-                notes.length
-              )}
-
               <button
                 className="pagination-arrow"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

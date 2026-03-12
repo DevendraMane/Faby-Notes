@@ -29,7 +29,7 @@ const Bookmarks = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         if (res.ok) {
           const data = await res.json();
@@ -37,7 +37,7 @@ const Bookmarks = () => {
           setTotalPages(data.totalPages || 1);
         } else {
           throw new Error(
-            `Failed to fetch bookmarks: ${res.status} ${res.statusText}`
+            `Failed to fetch bookmarks: ${res.status} ${res.statusText}`,
           );
         }
       } catch (err) {
@@ -82,7 +82,7 @@ const Bookmarks = () => {
       }
       setSelectedNotes(newSelected);
       setSelectAll(newSelected.size === bookmarks.length);
-      console.log("[v0] Ctrl+Right-click selection:", noteId);
+      // console.log("[v0] Ctrl+Right-click selection:", noteId);
     }
   };
   const handleDownloadSelected = async () => {
@@ -91,7 +91,7 @@ const Bookmarks = () => {
       return;
     }
     const selectedBookmarks = bookmarks.filter((note) =>
-      selectedNotes.has(note._id)
+      selectedNotes.has(note._id),
     );
     for (const note of selectedBookmarks) {
       try {
@@ -156,7 +156,7 @@ const Bookmarks = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ noteIds: Array.from(selectedNotes) }),
-        }
+        },
       );
       const data = await res.json();
       if (!res.ok)
@@ -172,7 +172,7 @@ const Bookmarks = () => {
   const handleBackClick = () => {
     if (navigate) {
       navigate(
-        `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`
+        `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`,
       );
     } else {
       window.history.back();
@@ -181,10 +181,10 @@ const Bookmarks = () => {
   const handleNoteClick = (note) => {
     if (navigate) {
       navigate(
-        `/branch/${note.slug}/semester/${note.semesterNumber}/subject/${note.subjectCode}/${note.notesType}/note/${note._id}`
+        `/branch/${note.slug}/semester/${note.semesterNumber}/subject/${note.subjectCode}/${note.notesType}/note/${note._id}`,
       );
     } else {
-      console.log("Navigate to note:", note);
+      // console.log("Navigate to note:", note);
     }
   };
   const getFileIcon = (fileName, fileType) => {
@@ -306,7 +306,7 @@ const Bookmarks = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowDropdown(
-                          showDropdown === note._id ? null : note._id
+                          showDropdown === note._id ? null : note._id,
                         );
                       }}
                     >
@@ -330,7 +330,7 @@ const Bookmarks = () => {
                     style={{
                       backgroundColor: getFileTypeColor(
                         note.notesTitle,
-                        note.fileType
+                        note.fileType,
                       ),
                     }}
                   >
@@ -353,14 +353,6 @@ const Bookmarks = () => {
           </div>
           {totalPages > 1 && (
             <div className="pagination-container">
-              {console.log(
-                "[v0] Pagination - Current page:",
-                currentPage,
-                "Total pages:",
-                totalPages,
-                "Total bookmarks:",
-                bookmarks.length
-              )}
               <button
                 className="pagination-arrow"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

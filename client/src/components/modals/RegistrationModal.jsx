@@ -60,9 +60,6 @@ const RegistrationModal = ({ isOpen, onClose }) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
-    // *or from here you can send data to the DB
-
     setIsSubmitting(true);
 
     try {
@@ -73,10 +70,8 @@ const RegistrationModal = ({ isOpen, onClose }) => {
         },
         body: JSON.stringify(formData),
       });
-      console.log("signUp Response❔:", response);
 
       const res_data = await response.json();
-      console.log("response from server", res_data.message);
 
       //? for cleaning the form after successfully posting the data
       if (response.ok) {
@@ -96,7 +91,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
       } else {
         // ?we are getting these errors from the error-middleware.js of server(Zod)
         toast.error(
-          res_data.extraDetails ? res_data.extraDetails : res_data.message
+          res_data.extraDetails ? res_data.extraDetails : res_data.message,
         );
 
         // alert("not valid registration");

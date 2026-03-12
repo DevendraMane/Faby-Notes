@@ -13,8 +13,6 @@ export const NotesType = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log("NotesType params:", { slug, semesterNumber, subjectCode });
-
   // Fetch branch details
   useEffect(() => {
     const fetchBranchData = async () => {
@@ -37,11 +35,7 @@ export const NotesType = () => {
   const handleNotesTypeClick = (selectedNotesType) => {
     // Navigate to Notes page with the selected notes type
     navigate(
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${selectedNotesType}`
-    );
-    console.log(
-      "Navigating to:",
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${selectedNotesType}`
+      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${selectedNotesType}`,
     );
   };
 

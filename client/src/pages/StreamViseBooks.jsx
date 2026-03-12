@@ -17,7 +17,6 @@ const StreamViseBooks = () => {
         setLoading(true);
         const books = await fetchStreamViseBooks(streamName);
 
-        console.log("Fetched books:", books); // 🔍 Debug log
         setBooks(books || []);
       } catch (err) {
         console.error("Error fetching notes:", err);
@@ -111,7 +110,7 @@ const StreamViseBooks = () => {
                     style={{
                       backgroundColor: getFileTypeColor(
                         book.notesTitle,
-                        book.fileType
+                        book.fileType,
                       ),
                     }}
                   >

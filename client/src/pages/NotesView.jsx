@@ -22,7 +22,7 @@ export const NotesView = () => {
         const notesData = await fetchNotesWithSubjectCode(subjectCode);
 
         const specificNote = notesData?.find(
-          (n) => n._id.toString() === noteId
+          (n) => n._id.toString() === noteId,
         );
 
         if (!specificNote) {
@@ -45,7 +45,7 @@ export const NotesView = () => {
 
   const handleBackClick = () => {
     navigate(
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${notesType}`
+      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}/${notesType}`,
     );
   };
 
@@ -72,7 +72,6 @@ export const NotesView = () => {
 
         const data = await res.json();
         toast.success("Note saved! 🔖");
-        console.log("Bookmarks:", data.bookmarks);
       } catch (err) {
         console.error("Bookmark error:", err);
         toast.error("Could not save note");

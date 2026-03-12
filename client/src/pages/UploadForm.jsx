@@ -48,14 +48,14 @@ const UploadForm = () => {
   useEffect(() => {
     if (formData.semesterNumber && formData.branchName && formData.streamName) {
       const selectedBranch = dropdownOptions.branches.find(
-        (branch) => branch.branchName === formData.branchName
+        (branch) => branch.branchName === formData.branchName,
       );
 
       if (selectedBranch) {
         fetchSubjects(
           formData.semesterNumber,
           formData.streamName,
-          selectedBranch.slug
+          selectedBranch.slug,
         );
       }
     } else {
@@ -94,19 +94,11 @@ const UploadForm = () => {
 
   const fetchSubjects = async (semesterNumber, streamName, branchSlug) => {
     try {
-      console.log("Fetching subjects with:", {
-        semesterNumber,
-        streamName,
-        branchSlug,
-      });
-
       const subjectsData = await fetchSubjectsData(
         semesterNumber,
         streamName,
-        branchSlug
+        branchSlug,
       );
-
-      console.log("Fetched subjects data:", subjectsData);
 
       setDropdownOptions((prev) => ({
         ...prev,
@@ -128,7 +120,7 @@ const UploadForm = () => {
 
       if (field === "branchName") {
         const selectedBranch = dropdownOptions.branches.find(
-          (branch) => branch.branchName === value
+          (branch) => branch.branchName === value,
         );
 
         if (selectedBranch) {
@@ -148,7 +140,7 @@ const UploadForm = () => {
 
       if (field === "subjectName") {
         const selectedSubject = dropdownOptions.subjects.find(
-          (subject) => subject.subjectName === value
+          (subject) => subject.subjectName === value,
         );
         if (selectedSubject) {
           updated.subjectCode = selectedSubject.subjectCode;
@@ -157,7 +149,7 @@ const UploadForm = () => {
 
       if (field === "subjectCode") {
         const selectedSubject = dropdownOptions.subjects.find(
-          (subject) => subject.subjectCode === value
+          (subject) => subject.subjectCode === value,
         );
         if (selectedSubject) {
           updated.subjectName = selectedSubject.subjectName;
@@ -222,17 +214,6 @@ const UploadForm = () => {
       uploadFormData.append("branchName", formData.branchName);
       uploadFormData.append("streamName", formData.streamName);
       uploadFormData.append("semesterNumber", formData.semesterNumber);
-
-      console.log("Sending form data:", {
-        notesType: formData.notesType,
-        subjectName: formData.subjectName,
-        subjectCode: formData.subjectCode,
-        branchName: formData.branchName,
-        streamName: formData.streamName,
-        semesterNumber: formData.semesterNumber,
-        notesTitle: formData.notesType,
-        file: formData.file.name,
-      });
 
       const response = await fetch(`${API}/api/upload/form`, {
         method: "POST",
@@ -325,7 +306,12 @@ const UploadForm = () => {
           <FormBranchName
             value={formData.branchName}
             onChange={(value) => handleInputChange("branchName", value)}
-            options={dropdownOptions}
+            options={{
+              ...dropdownOptions,
+              branches: dropdownOptions.branches.filter(
+                (branch) => branch.streamName === formData.streamName,
+              ),
+            }}
             customInput={customInputs.branchName}
             onToggleCustom={() => handleCustomToggle("branchName")}
           />

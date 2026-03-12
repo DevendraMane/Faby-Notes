@@ -67,7 +67,6 @@ const EditUser = () => {
 
       if (res.ok) {
         toast.success("Profile updated successfully ✅");
-        console.log("Updated user:", data.user);
       } else {
         toast.error(data.message || "Failed to update profile");
       }

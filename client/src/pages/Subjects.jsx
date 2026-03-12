@@ -29,7 +29,6 @@ export const Subjects = () => {
   const navigate = useNavigate();
   const { user, isLoggedIn } = useAuth();
   const isTeacher = user?.role === "teacher" || user?.role === "admin";
-  console.log("👋🏽", slug, semesterNumber);
 
   useEffect(() => {
     if (!semesterNumber || isNaN(semesterNumber)) {
@@ -52,14 +51,13 @@ export const Subjects = () => {
         const subjectsData = await fetchSubjectsData(
           semesterNumber,
           branchData.streamName,
-          branchData.slug
+          branchData.slug,
         );
 
         if (!subjectsData) {
           throw new Error("No subjects data found");
         }
 
-        console.log("Subjects data:", subjectsData);
         setSubjects(subjectsData || []);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -80,7 +78,7 @@ export const Subjects = () => {
 
   const handleSubjectClick = (subjectCode) => {
     navigate(
-      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`
+      `/branch/${slug}/semester/${semesterNumber}/subject/${subjectCode}`,
     );
   };
 
@@ -119,7 +117,7 @@ export const Subjects = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(editFormData),
-        }
+        },
       );
 
       if (response.ok) {
@@ -128,8 +126,8 @@ export const Subjects = () => {
           prev.map((subject) =>
             subject._id === editingSubject._id
               ? { ...subject, ...editFormData }
-              : subject
-          )
+              : subject,
+          ),
         );
         closeEditModal();
       } else {
@@ -156,7 +154,7 @@ export const Subjects = () => {
             semesterNumber,
             slug: slug,
           }),
-        }
+        },
       );
       if (response.ok) {
         const createdSubject = await response.json();

@@ -50,10 +50,6 @@ const Semesters = () => {
     const encodedBranch = encodeURIComponent(slug);
 
     navigate(`/branch/${encodedBranch}/semester/${semesterNumber}`);
-    console.log(
-      "Final URL:",
-      `/branch/${encodedBranch}/semester/${semesterNumber}`
-    );
   };
 
   const handleBackClick = () => {
