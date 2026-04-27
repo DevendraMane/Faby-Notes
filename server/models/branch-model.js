@@ -21,8 +21,11 @@ const branchSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { collection: "branches" }
+  { collection: "branches" },
 );
+
+branchSchema.index({ slug: 1 });
+branchSchema.index({ streamName: 1 });
 
 branchSchema.pre("save", function (next) {
   if (!this.slug && this.shortform) {

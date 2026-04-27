@@ -2,6 +2,40 @@ import { useState, useEffect, createContext, useContext } from "react";
 
 export const AuthContext = createContext();
 
+const STREAM_CACHE_KEY = "faby_streams_cache_v1";
+const BRANCH_CACHE_KEY = "faby_branches_cache_v1";
+const CACHE_TTL_MS = 1000 * 60 * 30;
+
+const readCache = (key) => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if (!parsed?.timestamp || !Array.isArray(parsed?.data)) return null;
+    if (Date.now() - parsed.timestamp > CACHE_TTL_MS) return null;
+
+    return parsed.data;
+  } catch (error) {
+    console.error("Failed to read cache:", error);
+    return null;
+  }
+};
+
+const writeCache = (key, data) => {
+  try {
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        timestamp: Date.now(),
+        data,
+      }),
+    );
+  } catch (error) {
+    console.error("Failed to write cache:", error);
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("faby_token"));
   const [user, setUser] = useState(null);
@@ -133,22 +167,36 @@ export const AuthProvider = ({ children }) => {
     };
 
     const fetchStreamData = async () => {
+      const cachedStreams = readCache(STREAM_CACHE_KEY);
+      if (cachedStreams?.length) {
+        setStremData(cachedStreams);
+        return;
+      }
+
       try {
         const response = await fetch(`${API}/api/streams`);
         if (response.ok) {
           const data = await response.json();
           setStremData(data.streams);
+          writeCache(STREAM_CACHE_KEY, data.streams);
         }
       } catch (error) {
         console.error("Error fetching stream data:", error);
       }
     };
     const fetchBranchData = async () => {
+      const cachedBranches = readCache(BRANCH_CACHE_KEY);
+      if (cachedBranches?.length) {
+        setBranchData(cachedBranches);
+        return;
+      }
+
       try {
         const response = await fetch(`${API}/api/branches`);
         if (response.ok) {
           const data = await response.json();
           setBranchData(data.branches);
+          writeCache(BRANCH_CACHE_KEY, data.branches);
         }
       } catch (error) {
         console.error("Error fetching branch data:", error);
@@ -157,10 +205,11 @@ export const AuthProvider = ({ children }) => {
 
     // Get the subjects data using semesterNumber,streamName,slug
 
-    fetchBranchData();
     fetchUserData();
-    fetchStreamData();
-  }, [token, API, authorizationToken]);
+    Promise.all([fetchStreamData(), fetchBranchData()]).catch((error) => {
+      console.error("Error fetching startup data:", error);
+    });
+  }, [token, API]);
 
   return (
     <AuthContext.Provider

@@ -105,6 +105,8 @@ export const Home = () => {
                         className="img-card"
                         src={getImagePath(branch)}
                         alt={`${branch.shortform} Card`}
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = "/images/default-card.png";

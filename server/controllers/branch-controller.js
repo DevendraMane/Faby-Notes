@@ -2,8 +2,13 @@ import Branch from "../models/branch-model.js";
 
 const getAllBranches = async (req, res) => {
   try {
-    const branches = await Branch.find({});
+    const branches = await Branch.find(
+      {},
+      { shortform: 1, streamName: 1, slug: 1, branchName: 1, streamId: 1 },
+    ).lean();
     // console.log("All branches:", branches.length);
+
+    res.set("Cache-Control", "public, max-age=600, stale-while-revalidate=60");
 
     res.status(200).json({
       message: "Branches fetched successfully",
@@ -20,7 +25,10 @@ const getBranchBySlug = async (req, res) => {
     const { slug } = req.params;
     console.log("Fetching branch with slug:", slug);
 
-    const branch = await Branch.findOne({ slug });
+    const branch = await Branch.findOne(
+      { slug },
+      { shortform: 1, streamName: 1, slug: 1, branchName: 1, streamId: 1 },
+    ).lean();
 
     if (!branch) {
       console.log(`Branch with slug ${slug} not found`);
@@ -28,6 +36,7 @@ const getBranchBySlug = async (req, res) => {
     }
 
     console.log(`Found branch: ${branch}`);
+    res.set("Cache-Control", "public, max-age=600, stale-while-revalidate=60");
     res.status(200).json({
       message: "Branch fetched successfully",
       branch,
@@ -43,11 +52,16 @@ const getBranchesByStreamName = async (req, res) => {
     const { streamName } = req.params;
     console.log("Fetching branches for streamName:", streamName);
 
-    const branches = await Branch.find({ streamName });
+    const branches = await Branch.find(
+      { streamName },
+      { shortform: 1, streamName: 1, slug: 1, branchName: 1, streamId: 1 },
+    ).lean();
 
     console.log(
-      `Found ${branches.length} branches for streamName ${streamName}`
+      `Found ${branches.length} branches for streamName ${streamName}`,
     );
+
+    res.set("Cache-Control", "public, max-age=600, stale-while-revalidate=60");
 
     res.status(200).json({
       message: "Branches fetched successfully",

@@ -1,27 +1,41 @@
 import "./App.css";
+import { lazy, Suspense } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import { AppLayout } from "./components/layout/AppLayout";
-import { Home } from "./pages/Home";
-import Semesters from "./pages/Semesters";
-import { Subjects } from "./pages/Subjects";
-import VerifyEmail from "./components/VerifyEmail";
-import ResendVerification from "./components/ResendVerification";
-import GoogleAuthSuccess from "./pages/GoogleAuthSuccess";
-import { ErrorBoundary } from "./components/ErrorBoundary";
-import NotesDetail from "./pages/NotesDetail";
-import { NotesView } from "./pages/NotesView";
-import UploadForm from "./pages/UploadForm";
-import { NotesType } from "./pages/NotesType";
-import AiAssistant from "./pages/AiAssistant";
-import EditUser from "./pages/EditUser";
-import Bookmark from "./pages/Bookmarks";
-import { Books } from "./pages/Books";
-import StreamViseBooks from "./pages/StreamViseBooks";
-import BookMarksView from "./pages/BookMarksView";
+import Loader from "./components/Loader";
+
+const lazyNamed = (importer, exportName) =>
+  lazy(() => importer().then((module) => ({ default: module[exportName] })));
+
+const AppLayout = lazyNamed(
+  () => import("./components/layout/AppLayout"),
+  "AppLayout",
+);
+const Home = lazyNamed(() => import("./pages/Home"), "Home");
+const Semesters = lazy(() => import("./pages/Semesters"));
+const Subjects = lazyNamed(() => import("./pages/Subjects"), "Subjects");
+const VerifyEmail = lazy(() => import("./components/VerifyEmail"));
+const ResendVerification = lazy(() =>
+  import("./components/ResendVerification"),
+);
+const GoogleAuthSuccess = lazy(() => import("./pages/GoogleAuthSuccess"));
+const ErrorBoundary = lazyNamed(
+  () => import("./components/ErrorBoundary"),
+  "ErrorBoundary",
+);
+const NotesDetail = lazy(() => import("./pages/NotesDetail"));
+const NotesView = lazyNamed(() => import("./pages/NotesView"), "NotesView");
+const UploadForm = lazy(() => import("./pages/UploadForm"));
+const NotesType = lazyNamed(() => import("./pages/NotesType"), "NotesType");
+const AiAssistant = lazy(() => import("./pages/AiAssistant"));
+const EditUser = lazy(() => import("./pages/EditUser"));
+const Bookmark = lazy(() => import("./pages/Bookmarks"));
+const Books = lazyNamed(() => import("./pages/Books"), "Books");
+const StreamViseBooks = lazy(() => import("./pages/StreamViseBooks"));
+const BookMarksView = lazy(() => import("./pages/BookMarksView"));
 
 export const App = () => {
   const router = createBrowserRouter([
@@ -118,7 +132,11 @@ export const App = () => {
       ],
     },
   ]);
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense fallback={<Loader />}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 };
 
 export default App;
