@@ -4,7 +4,7 @@ import RegistrationModal from "../modals/RegistrationModal";
 import LoginModal from "../modals/LoginModal";
 import FeedBackModal from "../modals/FeedBack";
 import { useAuth } from "../../store/Auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import SearchBar from "../ui/SearchBar";
 
 export const Header = () => {

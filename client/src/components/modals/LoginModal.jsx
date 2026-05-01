@@ -1,8 +1,8 @@
 import Modal from "react-modal";
 import { useState } from "react";
-
+import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useAuth } from "../../store/Auth";
 
 Modal.setAppElement("#root");
@@ -14,11 +14,28 @@ const LogInModal = ({ isOpen, onClose }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResendVerification, setShowResendVerification] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [unverifiedEmail, setUnverifiedEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [forgotPasswordSubmitting, setForgotPasswordSubmitting] =
+    useState(false);
 
   const navigate = useNavigate();
 
   const { storeTokenToLocalStrorage, API } = useAuth();
+
+  // Form validation checks
+  const isEmailValid = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isPasswordValid = () => {
+    return formData.password.length >= 6;
+  };
+
+  const isFormValid = isEmailValid(formData.email) && isPasswordValid();
 
   // styles for the modal
   const customModalStyles = {
@@ -29,12 +46,14 @@ const LogInModal = ({ isOpen, onClose }) => {
       bottom: "auto",
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
-      borderRadius: "16px",
+      borderRadius: "32px",
       padding: "32px",
       maxWidth: "460px",
       width: "90%",
+      maxHeight: "80vh",
       border: "none",
       backgroundColor: "#fff",
+      overflow: "auto",
     },
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
@@ -80,7 +99,7 @@ const LogInModal = ({ isOpen, onClose }) => {
           setShowResendVerification(true);
         } else {
           toast.error(
-            res_data.extraDetails ? res_data.extraDetails : res_data.message
+            res_data.extraDetails ? res_data.extraDetails : res_data.message,
           );
         }
       }
@@ -119,6 +138,42 @@ const LogInModal = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+
+    if (!isEmailValid(forgotPasswordEmail)) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+
+    setForgotPasswordSubmitting(true);
+
+    try {
+      const response = await fetch(`${API}/api/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: forgotPasswordEmail }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Password reset link sent to your email!");
+        setForgotPasswordEmail("");
+        setShowForgotPassword(false);
+      } else {
+        toast.error(data.message || "Failed to send password reset email");
+      }
+    } catch (error) {
+      console.error("Error sending password reset:", error);
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setForgotPasswordSubmitting(false);
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -134,7 +189,48 @@ const LogInModal = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {showResendVerification ? (
+        {showForgotPassword ? (
+          <div className="verification-reminder">
+            <h3>Reset Password</h3>
+            <p>Enter your email address to receive a password reset link.</p>
+
+            <form onSubmit={handleForgotPassword} style={{ marginTop: "20px" }}>
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={forgotPasswordEmail}
+                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                />
+                {forgotPasswordEmail && !isEmailValid(forgotPasswordEmail) && (
+                  <small style={{ color: "red" }}>
+                    Please enter a valid email
+                  </small>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={
+                  forgotPasswordSubmitting || !isEmailValid(forgotPasswordEmail)
+                }
+              >
+                {forgotPasswordSubmitting ? "Sending..." : "Send Reset Link"}
+              </button>
+            </form>
+
+            <button
+              className="back-to-login-button"
+              onClick={() => setShowForgotPassword(false)}
+              style={{ marginTop: "10px" }}
+            >
+              Back to Login
+            </button>
+          </div>
+        ) : showResendVerification ? (
           <div className="verification-reminder">
             <h3>Email Verification Required</h3>
             <p>
@@ -177,29 +273,74 @@ const LogInModal = ({ isOpen, onClose }) => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  placeholder="Enter your email"
                   required
                 />
+                {formData.email && !isEmailValid(formData.email) && (
+                  <small style={{ color: "red" }}>
+                    Please enter a valid email
+                  </small>
+                )}
               </div>
 
               <div className="form-group">
                 <label>Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="password-input-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password (min 6 characters)"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+                {formData.password && !isPasswordValid() && (
+                  <small style={{ color: "red" }}>
+                    Password must be at least 6 characters
+                  </small>
+                )}
               </div>
 
               <button
                 type="submit"
                 className="submit-button"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isFormValid}
               >
                 {isSubmitting ? "Login In..." : "Login"}
               </button>
+
+              <div style={{ textAlign: "center", marginTop: "12px" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#22b1ee",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    fontSize: "14px",
+                  }}
+                >
+                  Forgot Password?
+                </button>
+              </div>
             </form>
+
+            <div className="modal-note">
+              <p>
+                <strong>Note for Teachers:</strong> Please login with your
+                college email ID (ftccoe.ac.in domain) to gain teacher access.
+              </p>
+            </div>
           </>
         )}
       </div>

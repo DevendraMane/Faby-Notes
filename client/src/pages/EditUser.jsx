@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./EditUser.css";
 import { useAuth } from "../store/Auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useEffect } from "react";
 
 const EditUser = () => {

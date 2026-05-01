@@ -21,6 +21,10 @@ const VerifyEmail = lazy(() => import("./components/VerifyEmail"));
 const ResendVerification = lazy(() =>
   import("./components/ResendVerification"),
 );
+const ResetPassword = lazyNamed(
+  () => import("./pages/ResetPassword"),
+  "ResetPassword",
+);
 const GoogleAuthSuccess = lazy(() => import("./pages/GoogleAuthSuccess"));
 const ErrorBoundary = lazyNamed(
   () => import("./components/ErrorBoundary"),
@@ -67,6 +71,10 @@ export const App = () => {
         {
           path: "resend-verification",
           element: <ResendVerification />,
+        },
+        {
+          path: "reset-password/:token",
+          element: <ResetPassword />,
         },
         {
           path: "branch/:slug",
@@ -133,7 +141,7 @@ export const App = () => {
     },
   ]);
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<Loader percentage={45} />}>
       <RouterProvider router={router} />
     </Suspense>
   );

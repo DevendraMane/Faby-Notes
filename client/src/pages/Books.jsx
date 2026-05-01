@@ -10,6 +10,7 @@ export const Books = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [loadingPercentage, setLoadingPercentage] = useState(0);
 
   const handleStreamClick = (streamName) => {
     navigate(`/books/${streamName}`);
@@ -19,7 +20,7 @@ export const Books = () => {
     navigate(`/`);
   };
 
-  if (loading) return <Loader />;
+  if (loading) return <Loader percentage={loadingPercentage} />;
   if (error) return <div className="error-message">{error}</div>;
 
   return (

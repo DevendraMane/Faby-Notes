@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 // import Loader from "../components/Loader";
 import { useAuth } from "../store/Auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 Modal.setAppElement("#root");
 
@@ -183,10 +183,10 @@ export const Subjects = () => {
 
         {isLoggedIn && isTeacher && (
           <button
-            className="add-button flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            className="add-subject-button"
             onClick={(e) => handleAddSubjectBtnClick(e)}
           >
-            <Plus size={16} /> Add Subject
+            <Plus size={18} /> Add Subject
           </button>
         )}
         <div className="subject-list">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "../../store/Auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export const SideMenu = ({ onToggle }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -10,6 +10,11 @@ export const SideMenu = ({ onToggle }) => {
   const { user, isLoggedIn } = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -121,7 +126,7 @@ export const SideMenu = ({ onToggle }) => {
             <li className="sidemenu-nav-item">
               <Link
                 to="/"
-                className="sidemenu-nav-link"
+                className={`sidemenu-nav-link ${isActive("/") ? "active" : ""}`}
                 onClick={handleNavClick}
               >
                 <i className="icon-home">🏠</i>
@@ -133,7 +138,9 @@ export const SideMenu = ({ onToggle }) => {
             <li className="sidemenu-nav-item">
               <Link
                 to="/ai-assistant"
-                className="sidemenu-nav-link"
+                className={`sidemenu-nav-link ${
+                  isActive("/ai-assistant") ? "active" : ""
+                }`}
                 onClick={handleNavClick}
               >
                 <i className="icon-chats">🤖</i>
@@ -145,7 +152,9 @@ export const SideMenu = ({ onToggle }) => {
             <li className="sidemenu-nav-item">
               <Link
                 to="/user/bookmarks"
-                className="sidemenu-nav-link"
+                className={`sidemenu-nav-link ${
+                  isActive("/user/bookmarks") ? "active" : ""
+                }`}
                 onClick={handleNavClick}
               >
                 <i className="icon-library">📚</i>
@@ -171,7 +180,7 @@ export const SideMenu = ({ onToggle }) => {
             className="sidemenu-overlay"
             onClick={() => setIsOpen(false)}
           ></div>,
-          document.body
+          document.body,
         )}
     </>
   );

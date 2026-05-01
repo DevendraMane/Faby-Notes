@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import { useAuth } from "../store/Auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 export const BookMarksView = () => {
   const [bookmark, setBookMarks] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loadingPercentage, setLoadingPercentage] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
   const { fetchNotesWithSubjectCode, isLoggedIn, API, token } = useAuth();
@@ -18,13 +19,19 @@ export const BookMarksView = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setLoadingPercentage(30);
+
         const bookmarksData = await fetch(`${API}/api/bookmark/user-bookmarks`);
+        setLoadingPercentage(70);
 
         setBookMarks(bookmarksData.bookmarks);
+        setLoadingPercentage(100);
+        setTimeout(() => {
+          setLoading(false);
+        }, 300);
       } catch (err) {
         console.error("Error fetching note:", err);
         setError(`Failed to load note: ${err.message}`);
-      } finally {
         setLoading(false);
       }
     };
@@ -83,7 +90,7 @@ export const BookMarksView = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) return <Loader percentage={loadingPercentage} />;
   if (error) return <div className="error-message">{error}</div>;
   if (!note) return <div className="error-message">Note not found</div>;
 

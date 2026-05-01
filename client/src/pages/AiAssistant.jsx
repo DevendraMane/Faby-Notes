@@ -69,7 +69,7 @@ const AiAssistant = () => {
     } catch (error) {
       console.error("Error sending message:", error);
       setError(
-        "Sorry, I'm having trouble responding right now. Please try again."
+        "Sorry, I'm having trouble responding right now. Please try again.",
       );
 
       const errorMessage = {
@@ -125,7 +125,7 @@ const AiAssistant = () => {
         <button
           onClick={clearChat}
           className="ai-assistant-clear-btn"
-          title="Clear Chat"
+          title="Clear Chat History"
         >
           🗑️
         </button>

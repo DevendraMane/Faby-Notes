@@ -1,8 +1,9 @@
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../store/Auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 Modal.setAppElement("#root");
 
@@ -14,10 +15,38 @@ const RegistrationModal = ({ isOpen, onClose }) => {
     cnfpassword: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
   const { storeTokenToLocalStrorage, API } = useAuth();
+
+  // Form validation checks
+  const isEmailValid = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isUsernameValid = () => {
+    return formData.username.length >= 3 && formData.username.length <= 50;
+  };
+
+  const isPasswordValid = () => {
+    return formData.password.length >= 6;
+  };
+
+  const doPasswordsMatch = () => {
+    return (
+      formData.password === formData.cnfpassword && formData.password.length > 0
+    );
+  };
+
+  const isFormValid =
+    isUsernameValid() &&
+    isEmailValid(formData.email) &&
+    isPasswordValid() &&
+    doPasswordsMatch();
 
   // Reset form data when modal opens
   useEffect(() => {
@@ -39,12 +68,14 @@ const RegistrationModal = ({ isOpen, onClose }) => {
       bottom: "auto",
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
-      borderRadius: "16px",
+      borderRadius: "32px",
       padding: "32px",
       maxWidth: "460px",
       width: "90%",
+      maxHeight: "85vh",
       border: "none",
       backgroundColor: "#fff",
+      overflow: "auto",
     },
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
@@ -80,7 +111,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
         // ?function for storing data to local storage
         storeTokenToLocalStrorage(res_data.token);
 
-        toast(`varification email sent ✅`);
+        toast.success(`Verification email sent ✅`);
 
         setFormData({
           username: "",
@@ -151,13 +182,19 @@ const RegistrationModal = ({ isOpen, onClose }) => {
           <div className="form-group">
             <label htmlFor="username">Your Name</label>
             <input
-              type="username"
+              type="text"
               id="username"
               name="username"
               value={formData.username}
               onChange={handleChange}
+              placeholder="Enter your name (3-50 characters)"
               required
             />
+            {formData.username && !isUsernameValid() && (
+              <small style={{ color: "red" }}>
+                Username must be 3-50 characters long
+              </small>
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -167,40 +204,80 @@ const RegistrationModal = ({ isOpen, onClose }) => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              placeholder="Enter your email"
               required
             />
+            {formData.email && !isEmailValid(formData.email) && (
+              <small style={{ color: "red" }}>Please enter a valid email</small>
+            )}
           </div>
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter password (min 6 characters)"
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            {formData.password && !isPasswordValid() && (
+              <small style={{ color: "red" }}>
+                Password must be at least 6 characters
+              </small>
+            )}
           </div>
+
           <div className="form-group">
             <label htmlFor="cnfpassword">Confirm Password</label>
-            <input
-              type="password"
-              id="cnfpassword"
-              name="cnfpassword"
-              value={formData.cnfpassword}
-              onChange={handleChange}
-              required
-            />
+            <div className="password-input-wrapper">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="cnfpassword"
+                name="cnfpassword"
+                value={formData.cnfpassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            {formData.cnfpassword && !doPasswordsMatch() && (
+              <small style={{ color: "red" }}>Passwords do not match</small>
+            )}
           </div>
           <button
             type="submit"
             className="submit-button"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isFormValid}
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </button>
         </form>
+
+        <div className="modal-note">
+          <p>
+            <strong>Note for Teachers:</strong> Please register with your
+            college email ID (ftccoe.ac.in domain) to gain teacher access.
+          </p>
+        </div>
       </div>
     </Modal>
   );

@@ -44,6 +44,12 @@ const userSchema = new mongoose.Schema({
   verificationTokenExpiry: {
     type: Date,
   },
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetTokenExpiry: {
+    type: Date,
+  },
   authProvider: {
     type: String,
     default: "local",
@@ -113,7 +119,7 @@ userSchema.methods.generateToken = function () {
       process.env.JWT_SECRET_KEY,
       {
         expiresIn: "30d",
-      }
+      },
     );
   } catch (error) {
     console.error("Token generation error:", error);

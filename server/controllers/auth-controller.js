@@ -2,6 +2,8 @@ import User from "../models/user-model.js";
 import {
   sendVerificationEmail,
   sendWelcomeEmail,
+  sendPasswordResetEmail,
+  sendPasswordResetConfirmationEmail,
 } from "../utils/email-service.js";
 import jwt from "jsonwebtoken";
 
@@ -37,20 +39,20 @@ const register = async (req, res) => {
     const verificationToken = jwt.sign(
       { userId: userCreated._id.toString() },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "24h" }
+      { expiresIn: "24h" },
     );
 
     // Store the token in the user document
     userCreated.verificationToken = verificationToken;
     userCreated.verificationTokenExpiry = new Date(
-      Date.now() + 24 * 60 * 60 * 1000
+      Date.now() + 24 * 60 * 60 * 1000,
     ); // 24 hours
     await userCreated.save();
 
     // Send verification email
     const emailSent = await sendVerificationEmail(
       userCreated,
-      verificationToken
+      verificationToken,
     );
 
     // Send response
@@ -169,7 +171,7 @@ const resendVerificationEmail = async (req, res) => {
     const verificationToken = jwt.sign(
       { userId: user._id.toString() },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "24h" }
+      { expiresIn: "24h" },
     );
 
     // Update user with new token
@@ -245,7 +247,7 @@ const googleAuthCallback = async (req, res) => {
 
     // Redirect to frontend with token
     res.redirect(
-      `${process.env.FRONTEND_URL}/auth/google/success?token=${token}`
+      `${process.env.FRONTEND_URL}/auth/google/success?token=${token}`,
     );
   } catch (error) {
     console.error("Google auth callback error:", error);
@@ -296,6 +298,109 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+// ****** FORGOT PASSWORD CONTROLLER ****** //
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Find the user
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate password reset token
+    const resetToken = jwt.sign(
+      { userId: user._id.toString() },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "1h" },
+    );
+
+    // Store the token in the user document
+    user.passwordResetToken = resetToken;
+    user.passwordResetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    await user.save();
+
+    // Send reset password email
+    const emailSent = await sendPasswordResetEmail(user, resetToken);
+
+    if (emailSent) {
+      res.status(200).json({
+        message: "Password reset link sent to your email",
+      });
+    } else {
+      res.status(500).json({
+        message: "Failed to send password reset email",
+      });
+    }
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ message: "Failed to send password reset email" });
+  }
+};
+// ------ FORGOT PASSWORD CONTROLLER ------ //
+
+// ****** RESET PASSWORD CONTROLLER ****** //
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword, confirmPassword } = req.body;
+
+    // Validate passwords match
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Verify the token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    } catch (error) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired reset token" });
+    }
+
+    const userId = decoded.userId;
+
+    // Find the user
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if token matches and is not expired
+    if (
+      user.passwordResetToken !== token ||
+      new Date() > user.passwordResetTokenExpiry
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired reset token" });
+    }
+
+    // Update password
+    user.password = newPassword;
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpiry = undefined;
+    await user.save();
+
+    // Send password reset confirmation email
+    await sendPasswordResetConfirmationEmail(user);
+
+    res.status(200).json({
+      message:
+        "Password reset successfully! You can now log in with your new password.",
+    });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ message: "Failed to reset password" });
+  }
+};
+// ------ RESET PASSWORD CONTROLLER ------ //
+
 export default {
   register,
   login,
@@ -304,4 +409,6 @@ export default {
   getUser,
   googleAuthCallback,
   updateUserProfile,
+  forgotPassword,
+  resetPassword,
 };

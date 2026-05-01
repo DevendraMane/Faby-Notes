@@ -146,3 +146,117 @@ The Faby Notes Team
     return false;
   }
 };
+
+// Send password reset email
+export const sendPasswordResetEmail = async (user, resetToken) => {
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+  const mailOptions = {
+    from: {
+      name: "Faby Notes",
+      address: process.env.EMAIL_USER,
+    },
+    to: user.email,
+    subject: "Password Reset Request - Faby Notes",
+    // Add text version for better deliverability
+    text: `
+Hello ${user.username},
+
+We received a request to reset your password. Click the link below to set a new password:
+
+${resetUrl}
+
+This link will expire in 1 hour.
+
+If you didn't request a password reset, please ignore this email and your password will remain unchanged.
+
+Best regards,
+The Faby Notes Team
+    `,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+        <h2 style="color: #333; text-align: center;">Password Reset Request</h2>
+        <p>Hello ${user.username},</p>
+        <p>We received a request to reset your password. Click the button below to set a new password:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${resetUrl}" style="background-color: #2196F3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Reset Password</a>
+        </div>
+        <p>If the button doesn't work, you can also copy and paste the following link into your browser:</p>
+        <p style="word-break: break-all; color: #666;">${resetUrl}</p>
+        <p><strong>This link will expire in 1 hour.</strong></p>
+        <p>If you didn't request a password reset, please ignore this email and your password will remain unchanged.</p>
+        <p>Best regards,<br>The Faby Notes Team</p>
+      </div>
+    `,
+    // Add headers to improve deliverability
+    headers: {
+      "X-Priority": "1",
+      "X-MSMail-Priority": "High",
+      Importance: "High",
+    },
+  };
+
+  try {
+    console.log("Attempting to send password reset email to:", user.email);
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password reset email sent:", info.messageId);
+    return true;
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+    return false;
+  }
+};
+
+// Send password reset confirmation email
+export const sendPasswordResetConfirmationEmail = async (user) => {
+  const mailOptions = {
+    from: {
+      name: "Faby Notes",
+      address: process.env.EMAIL_USER,
+    },
+    to: user.email,
+    subject: "Password Reset Successful - Faby Notes",
+    // Add text version for better deliverability
+    text: `
+Hello ${user.username},
+
+Your password has been successfully reset. You can now log in with your new password.
+
+If you didn't reset your password, please contact our support team immediately.
+
+Best regards,
+The Faby Notes Team
+    `,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+        <h2 style="color: #333; text-align: center;">Password Reset Successful!</h2>
+        <p>Hello ${user.username},</p>
+        <p>Your password has been successfully reset. You can now log in with your new password.</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${process.env.FRONTEND_URL}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Go to Faby Notes</a>
+        </div>
+        <p><strong>If you didn't reset your password, please contact our support team immediately.</strong></p>
+        <p>Best regards,<br>The Faby Notes Team</p>
+      </div>
+    `,
+    // Add headers to improve deliverability
+    headers: {
+      "X-Priority": "1",
+      "X-MSMail-Priority": "High",
+      Importance: "High",
+    },
+  };
+
+  try {
+    console.log(
+      "Attempting to send password reset confirmation email to:",
+      user.email,
+    );
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password reset confirmation email sent:", info.messageId);
+    return true;
+  } catch (error) {
+    console.error("Error sending password reset confirmation email:", error);
+    return false;
+  }
+};

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/Auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const GoogleAuthSuccess = () => {
   const [searchParams] = useSearchParams();

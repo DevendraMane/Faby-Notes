@@ -2,7 +2,7 @@ import Modal from "react-modal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../store/Auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -92,7 +92,7 @@ const FeedBackModal = ({ isOpen, onClose }) => {
         } else {
           // Handle HTML or other non-JSON responses
           toast.error(
-            `Server error: ${response.status} ${response.statusText}`
+            `Server error: ${response.status} ${response.statusText}`,
           );
         }
       }

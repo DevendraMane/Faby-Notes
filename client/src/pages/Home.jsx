@@ -8,6 +8,7 @@ export const Home = () => {
   const { streamData, branchData } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loadingPercentage, setLoadingPercentage] = useState(0);
 
   const navigate = useNavigate();
 
@@ -58,10 +59,16 @@ export const Home = () => {
   useEffect(() => {
     try {
       setLoading(true);
+      setLoadingPercentage(20);
 
       // Wait until branchData and streamData load
       if (streamData.length && branchData.length) {
-        setLoading(false);
+        setLoadingPercentage(100);
+        setTimeout(() => {
+          setLoading(false);
+        }, 300);
+      } else {
+        setLoadingPercentage(50);
       }
     } catch (err) {
       console.error(err);
@@ -70,7 +77,7 @@ export const Home = () => {
     }
   }, [streamData, branchData]);
 
-  if (loading) return <Loader />;
+  if (loading) return <Loader percentage={loadingPercentage} />;
   if (error) return <div className="error">{error}</div>;
 
   if (!streamData || streamData.length === 0) {

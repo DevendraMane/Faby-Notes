@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/Auth";
 import "./Bookmarks.css";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 const Bookmarks = () => {
   const [bookmarks, setBookMarks] = useState([]);
   const [loading, setLoading] = useState(true);
