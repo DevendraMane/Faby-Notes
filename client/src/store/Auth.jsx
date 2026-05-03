@@ -5,6 +5,30 @@ export const AuthContext = createContext();
 const STREAM_CACHE_KEY = "faby_streams_cache_v1";
 const BRANCH_CACHE_KEY = "faby_branches_cache_v1";
 const CACHE_TTL_MS = 1000 * 60 * 30;
+const REQUEST_TIMEOUT_MS = 10000; // 10 second timeout
+
+// Helper function to fetch with timeout and progress tracking
+const fetchWithTimeout = async (url, options = {}, onProgress = null) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === "AbortError") {
+      throw new Error(`Request timeout after ${REQUEST_TIMEOUT_MS}ms`);
+    }
+    throw error;
+  } finally {
+    if (onProgress) onProgress();
+  }
+};
 
 const readCache = (key) => {
   try {
@@ -43,6 +67,8 @@ export const AuthProvider = ({ children }) => {
   const [branchData, setBranchData] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(!!token);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0); // Real progress tracking
+  const [loadingErrors, setLoadingErrors] = useState([]); // Track errors
 
   const authorizationToken = `Bearer ${token}`;
   const API = import.meta.env.VITE_APP_URI_API;
@@ -81,15 +107,19 @@ export const AuthProvider = ({ children }) => {
   // gets note with subject code
   const fetchNotesWithSubjectCode = async (subjectCode) => {
     try {
-      setIsLoading(true);
-
       // Fetch subject details
-      const notesResponse = await fetch(`${API}/api/notes/code/${subjectCode}`);
+      const notesResponse = await fetchWithTimeout(
+        `${API}/api/notes/code/${subjectCode}`,
+        {},
+      );
+      if (!notesResponse.ok) {
+        throw new Error(`Failed to fetch notes: ${notesResponse.statusText}`);
+      }
       const notesData = await notesResponse.json();
-      return notesData.notes;
+      return notesData.notes || [];
     } catch (err) {
-      console.error("Error:", err);
-      setIsLoading(false);
+      console.error("Error fetching notes:", err);
+      throw err; // Re-throw so calling component can handle it
     }
   };
 
@@ -134,81 +164,129 @@ export const AuthProvider = ({ children }) => {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
+    let isMounted = true; // Prevent state updates after unmount
+
     const fetchUserData = async () => {
       if (!token) {
-        setIsLoading(false);
+        if (isMounted) {
+          setLoadProgress((prev) => Math.min(prev + 33, 100));
+        }
         return;
       }
 
       try {
-        setIsLoading(true);
-        const response = await fetch(`${API}/api/auth/user`, {
+        const response = await fetchWithTimeout(`${API}/api/auth/user`, {
           method: "GET",
           headers: {
             Authorization: authorizationToken,
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user);
-          setIsLoggedIn(true);
-        } else {
-          // If token is invalid, clear it
-          logoutUser();
+        if (isMounted) {
+          if (response.ok) {
+            const data = await response.json();
+            setUser(data.user);
+            setIsLoggedIn(true);
+          } else {
+            logoutUser();
+          }
+          setLoadProgress((prev) => Math.min(prev + 33, 100));
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
-        // Clear token on error
-        logoutUser();
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setLoadingErrors((prev) => [
+            ...prev,
+            `User auth failed: ${error.message}`,
+          ]);
+          setLoadProgress((prev) => Math.min(prev + 33, 100)); // Still progress even on error
+          logoutUser();
+        }
       }
     };
 
     const fetchStreamData = async () => {
       const cachedStreams = readCache(STREAM_CACHE_KEY);
       if (cachedStreams?.length) {
-        setStremData(cachedStreams);
+        if (isMounted) {
+          setStremData(cachedStreams);
+          setLoadProgress((prev) => Math.min(prev + 33, 100));
+        }
         return;
       }
 
       try {
-        const response = await fetch(`${API}/api/streams`);
-        if (response.ok) {
-          const data = await response.json();
-          setStremData(data.streams);
-          writeCache(STREAM_CACHE_KEY, data.streams);
+        const response = await fetchWithTimeout(`${API}/api/streams`, {});
+        if (isMounted) {
+          if (response.ok) {
+            const data = await response.json();
+            setStremData(data.streams);
+            writeCache(STREAM_CACHE_KEY, data.streams);
+          }
+          setLoadProgress((prev) => Math.min(prev + 33, 100));
         }
       } catch (error) {
         console.error("Error fetching stream data:", error);
+        if (isMounted) {
+          setLoadingErrors((prev) => [
+            ...prev,
+            `Streams failed: ${error.message}`,
+          ]);
+          setLoadProgress((prev) => Math.min(prev + 33, 100)); // Still progress even on error
+        }
       }
     };
+
     const fetchBranchData = async () => {
       const cachedBranches = readCache(BRANCH_CACHE_KEY);
       if (cachedBranches?.length) {
-        setBranchData(cachedBranches);
+        if (isMounted) {
+          setBranchData(cachedBranches);
+          setLoadProgress((prev) => Math.min(prev + 33, 100));
+        }
         return;
       }
 
       try {
-        const response = await fetch(`${API}/api/branches`);
-        if (response.ok) {
-          const data = await response.json();
-          setBranchData(data.branches);
-          writeCache(BRANCH_CACHE_KEY, data.branches);
+        const response = await fetchWithTimeout(`${API}/api/branches`, {});
+        if (isMounted) {
+          if (response.ok) {
+            const data = await response.json();
+            setBranchData(data.branches);
+            writeCache(BRANCH_CACHE_KEY, data.branches);
+          }
+          setLoadProgress((prev) => Math.min(prev + 33, 100));
         }
       } catch (error) {
         console.error("Error fetching branch data:", error);
+        if (isMounted) {
+          setLoadingErrors((prev) => [
+            ...prev,
+            `Branches failed: ${error.message}`,
+          ]);
+          setLoadProgress((prev) => Math.min(prev + 33, 100)); // Still progress even on error
+        }
       }
     };
 
-    // Get the subjects data using semesterNumber,streamName,slug
+    // Start loading
+    setLoadProgress(10);
+    setLoadingErrors([]);
+    setIsLoading(true);
 
-    fetchUserData();
-    Promise.all([fetchStreamData(), fetchBranchData()]).catch((error) => {
-      console.error("Error fetching startup data:", error);
+    // Fetch user first (blocking), then streams & branches in parallel
+    fetchUserData().then(() => {
+      Promise.all([fetchStreamData(), fetchBranchData()]).finally(() => {
+        if (isMounted) {
+          setIsLoading(false);
+          setLoadProgress(100);
+        }
+      });
     });
+
+    return () => {
+      isMounted = false; // Cleanup to prevent memory leaks
+    };
   }, [token, API]);
 
   return (
@@ -224,6 +302,8 @@ export const AuthProvider = ({ children }) => {
         authorizationToken,
         streamData,
         branchData,
+        loadProgress, // Real progress tracking
+        loadingErrors, // Error messages
         fetchSubjectsData,
         fetchNotesWithSubjectCode,
         fetchBranchWithSlug,

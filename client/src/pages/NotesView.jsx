@@ -20,9 +20,18 @@ export const NotesView = () => {
       try {
         setLoading(true);
         setLoadingPercentage(20);
+        setError(null);
+
+        if (!subjectCode || !noteId) {
+          throw new Error("Missing required parameters");
+        }
 
         const notesData = await fetchNotesWithSubjectCode(subjectCode);
         setLoadingPercentage(60);
+
+        if (!notesData || notesData.length === 0) {
+          throw new Error("No notes found for this subject");
+        }
 
         const specificNote = notesData?.find(
           (n) => n._id.toString() === noteId,
@@ -34,9 +43,7 @@ export const NotesView = () => {
 
         setNote(specificNote);
         setLoadingPercentage(100);
-        setTimeout(() => {
-          setLoading(false);
-        }, 300);
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching note:", err);
         setError(`Failed to load note: ${err.message}`);
@@ -113,7 +120,18 @@ export const NotesView = () => {
   };
 
   if (loading) return <Loader percentage={loadingPercentage} />;
-  if (error) return <div className="error-message">{error}</div>;
+  if (error)
+    return (
+      <div className="error-message">
+        <h2>⚠️ {error}</h2>
+        <button
+          onClick={() => window.history.back()}
+          className="back-error-btn"
+        >
+          Go Back
+        </button>
+      </div>
+    );
   if (!note) return <div className="error-message">Note not found</div>;
 
   return (

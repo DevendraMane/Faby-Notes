@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// import Loader from "../components/Loader";
+import Loader from "../components/Loader";
 import { useAuth } from "../store/Auth";
 
 const NotesDetail = () => {
@@ -21,19 +21,28 @@ const NotesDetail = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
+
+        if (!subjectCode) {
+          throw new Error("Subject code not found");
+        }
+
         const notesData = await fetchNotesWithSubjectCode(subjectCode);
 
         // Filter notes by type if needed
         const filteredNotes =
-          notesData?.filter(
-            (note) =>
-              note.notesType?.toLowerCase() === notesType?.toLowerCase(),
-          ) || [];
+          (Array.isArray(notesData) &&
+            notesData.filter(
+              (note) =>
+                note.notesType?.toLowerCase() === notesType?.toLowerCase(),
+            )) ||
+          [];
 
         setNotes(filteredNotes);
       } catch (err) {
         console.error("Error fetching notes:", err);
         setError(`Failed to load notes: ${err.message}`);
+        setNotes([]);
       } finally {
         setLoading(false);
       }
@@ -173,7 +182,7 @@ const NotesDetail = () => {
     }
   };
 
-  // if (loading) return <Loader />;
+  if (loading) return <Loader percentage={50} />;
   if (error) return <div className="error-message">{error}</div>;
 
   return (

@@ -8,6 +8,7 @@ import feedbackRouter from "./routes/feedback-router.js";
 import session from "express-session";
 import passport from "passport";
 import { setupPassport } from "./config/passport.js";
+import mongoose from "mongoose";
 import "dotenv/config";
 import { subjectsRouter } from "./routes/subjects-router.js";
 import { notesRouter } from "./routes/notes-router.js";
@@ -83,6 +84,17 @@ app.use(passport.session());
 
 setupPassport();
 
+// ***** HEALTH CHECK ENDPOINT ***** //
+app.get("/api/health", (req, res) => {
+  const dbConnected = mongoose.connection.readyState === 1;
+  res.status(200).json({
+    status: "ok",
+    server: "running",
+    database: dbConnected ? "connected" : "disconnected",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // ***** AUTH ROUTES Handling-MIDDLEWARE ***** //
 app.use("/api/auth", authRouter);
 
@@ -122,8 +134,15 @@ app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is Running on ${PORT}`);
-  });
+// Start server immediately without waiting for DB connection
+app.listen(PORT, () => {
+  console.log(`Server is Running on ${PORT}`);
+});
+
+// Connect to database asynchronously in the background
+connectDB().catch((error) => {
+  console.error(
+    "Database connection failed, but server is still running:",
+    error,
+  );
 });

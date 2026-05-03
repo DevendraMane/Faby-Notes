@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../store/Auth";
-import Loader from "../components/Loader";
+import { SkeletonGrid } from "../components/SkeletonCard";
+import "./Home.css";
 
 export const Home = () => {
-  const [viewMode, setViewMode] = useState("grid");
-  const { streamData, branchData } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [loadingPercentage, setLoadingPercentage] = useState(0);
-
+  const [viewMode] = React.useState("grid");
+  const { streamData, branchData, isLoading, loadProgress, loadingErrors } =
+    useAuth();
   const navigate = useNavigate();
 
   const handleCardClick = (branchSlug) => {
@@ -55,30 +53,37 @@ export const Home = () => {
     return branchData.filter((branch) => branch.streamName === streamName);
   };
 
-  // Simulate same loading behavior as Semesters.jsx
-  useEffect(() => {
-    try {
-      setLoading(true);
-      setLoadingPercentage(20);
+  // Show skeleton loaders while data is still loading
+  if (isLoading || streamData.length === 0) {
+    return (
+      <div className="maincontent">
+        <div className="maincontent-section">
+          <div className="maincontent-header">
+            <h2 className="maincontent-title">• Loading branches...</h2>
+          </div>
+          <SkeletonGrid count={6} />
+        </div>
+      </div>
+    );
+  }
 
-      // Wait until branchData and streamData load
-      if (streamData.length && branchData.length) {
-        setLoadingPercentage(100);
-        setTimeout(() => {
-          setLoading(false);
-        }, 300);
-      } else {
-        setLoadingPercentage(50);
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load homepage data");
-      setLoading(false);
-    }
-  }, [streamData, branchData]);
-
-  if (loading) return <Loader percentage={loadingPercentage} />;
-  if (error) return <div className="error">{error}</div>;
+  // Show error if API calls failed
+  if (loadingErrors.length > 0) {
+    return (
+      <div className="maincontent">
+        <div className="error-container">
+          <h2>Unable to load content</h2>
+          <p>Please refresh the page to try again.</p>
+          <ul>
+            {loadingErrors.map((error, idx) => (
+              <li key={idx}>{error}</li>
+            ))}
+          </ul>
+          <button onClick={() => window.location.reload()}>Refresh Page</button>
+        </div>
+      </div>
+    );
+  }
 
   if (!streamData || streamData.length === 0) {
     return (

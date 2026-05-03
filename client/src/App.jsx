@@ -1,11 +1,12 @@
 import "./App.css";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
 import Loader from "./components/Loader";
+import { useAuth } from "./store/Auth";
 
 const lazyNamed = (importer, exportName) =>
   lazy(() => importer().then((module) => ({ default: module[exportName] })));
@@ -40,6 +41,18 @@ const Bookmark = lazy(() => import("./pages/Bookmarks"));
 const Books = lazyNamed(() => import("./pages/Books"), "Books");
 const StreamViseBooks = lazy(() => import("./pages/StreamViseBooks"));
 const BookMarksView = lazy(() => import("./pages/BookMarksView"));
+
+// Real Progress Loader Component using Auth context
+const RealProgressLoader = () => {
+  const { loadProgress, isLoading } = useAuth();
+
+  return <Loader percentage={loadProgress} />;
+};
+
+// Fallback loader for initial page load (before Auth context is ready)
+const InitialLoader = () => {
+  return <Loader percentage={5} />;
+};
 
 export const App = () => {
   const router = createBrowserRouter([
@@ -140,11 +153,24 @@ export const App = () => {
       ],
     },
   ]);
+
   return (
-    <Suspense fallback={<Loader percentage={45} />}>
-      <RouterProvider router={router} />
+    <Suspense fallback={<InitialLoader />}>
+      <AppContent router={router} />
     </Suspense>
   );
+};
+
+// Wrapper component that uses Auth context for real progress tracking
+const AppContent = ({ router }) => {
+  const { isLoading } = useAuth();
+
+  // Show real progress loader while initializing
+  if (isLoading) {
+    return <RealProgressLoader />;
+  }
+
+  return <RouterProvider router={router} />;
 };
 
 export default App;
